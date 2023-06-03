@@ -1,0 +1,336 @@
+/* Custom chat css */
+
+.chat-box__header {
+    margin-bottom: 25px;
+}
+
+.chat-box__header .thumb {
+    width: 55px;
+    height: 55px;
+}
+
+.chat-box__header .content {
+    width: calc(100% - 55px);
+    padding-left: 15px;
+}
+
+.chat-box__header .content .name {
+    font-size: 20px;
+}
+
+.chat-box__body {
+    max-height: 500px;
+    background-color: #F7F9FC;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    padding: 20px;
+    overflow: auto;
+}
+
+.chat-box__footer {
+    margin-top: 25px;
+}
+
+.chat-form {
+    padding: 20px;
+    border: 1px solid #dadce0;
+}
+
+.chat-form .form--control {
+    min-height: 100px !important;
+    border: none;
+    font-size: 14px;
+    background-color: #F7F9FC;
+}
+
+.chat-form .form--control:focus {
+    box-shadow: none;
+}
+
+.chat-form .bottom {
+    margin-top: 10px;
+    justify-content: space-between;
+}
+.chat-main {
+    z-index: 1;
+}
+.bg-el {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-attachment: fixed;
+    z-index: -1;
+    opacity: .55;
+}
+
+.single-chat + .single-chat {
+    margin-top: 40px;
+}
+
+@media (max-width: 460px) {
+    .single-chat + .single-chat {
+        margin-top: 30px;
+    }
+}
+
+.single-chat .content {
+    width: 100%;
+    padding-left: 15px;
+}
+
+@media (max-width: 460px) {
+    .single-chat .content {
+        width: 100%;
+        padding-left: 0;
+        margin-top: 15px;
+    }
+}
+
+.single-chat .content .message {
+    padding: 20px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+.single-chat .content .chat-time {
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.single-chat .chat-attachment {
+    margin-top: 10px;
+}
+
+.single-chat .chat-attachment .single-attachment {
+    margin: 2px;
+    font-size: 12px;
+    color: #7367f0;
+    padding: 4px 10px;
+    background-color: #f3f3f3;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+
+.single-chat.chat--left .content {
+    padding-right: 120px;
+}
+
+@media (max-width: 767px) {
+    .single-chat.chat--left .content {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 460px) {
+    .single-chat.chat--right {
+        justify-content: flex-end;
+    }
+}
+
+.single-chat.chat--right .thumb {
+    order: 2;
+}
+
+@media (max-width: 460px) {
+    .single-chat.chat--right .thumb {
+        order: 1;
+    }
+}
+
+.single-chat.chat--right .content {
+    order: 1;
+    padding-left: 120px;
+    padding-right: 15px;
+}
+
+@media (max-width: 767px) {
+    .single-chat.chat--right .content {
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 460px) {
+    .single-chat.chat--right .content {
+        order: 2;
+        padding-right: 0;
+    }
+}
+
+.single-chat.chat--right .content .message {
+    background-color: #7367f0;
+    color: #fff;
+}
+
+.single-chat.chat--right .content .message * {
+    color: #fff;
+}
+
+.single-chat.chat--right .content .chat-time {
+    text-align: right;
+}
+
+.single-chat.chat--right .chat-attachment .single-attachment {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-box__body {
+    scrollbar-width: thin;
+    scrollbar-color: blue orange;
+}
+
+.chat-box__body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.chat-box__body::-webkit-scrollbar-track {
+    background: #e7e7e7;
+    border-radius: 20px;
+}
+
+.chat-box__body::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border-radius: 20px;
+    border: 2px solid #e7e7e7;
+}
+
+.hide-text {
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+}
+
+.input-block-level {
+    display: block;
+    width: 100%;
+    min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.custom--card {
+    background-color: #fff;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+}
+/* trade request css end */
+/* card css start */
+.custom--card {
+    box-shadow: 0 3px 15px #8898aa26;
+    overflow: hidden;
+}
+
+.custom--card .card-header {
+    background-color: #fff;
+    padding: 0.9375rem 1.25rem;
+    border-color: #dadce0;
+}
+
+.custom--card .card-body {
+    padding: 1.25rem;
+}
+
+@media (max-width: 575px) {
+    .custom--card .card-body {
+        padding: 0.9375rem;
+    }
+}
+.caption-list li .caption, [data-label]::before, .select, .language-select option, .add-money-details-list li, .add-money-details-bottom {
+    color: #082032;
+}
+.caption-list li {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.625rem 0;
+    font-size: 0.9375rem;
+    border-bottom: 1px dashed #dadce0;
+}
+
+.caption-list li:first-child {
+    padding-top: 0;
+}
+
+.caption-list li:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.caption-list li .caption {
+    width: 40%;
+    font-family: "Jost", sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    position: relative;
+}
+
+.caption-list li .caption::after {
+    position: absolute;
+    content: ':';
+    top: 0;
+    right: 0;
+}
+
+.caption-list li .value {
+    width: 60%;
+    padding-left: 0.9375rem;
+}
+
+.badge--info {
+    background-color: rgba(30, 159, 242, 0.15);
+    border: 1px solid #1e9ff2;
+    color: #1e9ff2;
+}
+/* card css end */
+
+/* attach-file-upload css start */
+.attach-file-upload {
+    position: relative;
+    overflow: hidden;
+}
+.attach-file-upload .attach-file {
+    margin-left: -116px;
+    opacity: 0;
+}
+.attach-file-remove {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+    background-color: #EFF1F9;
+    opacity: 0;
+    visibility: hidden;
+}
+.attach-file-upload label {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.attach-file-upload.has-file .attach-file {
+    opacity: 1;
+}
+.attach-file-upload.has-file label {
+    opacity: 0;
+}
+.attach-file-upload.has-file .attach-file-remove {
+    opacity: 1;
+    visibility: visible;
+}
