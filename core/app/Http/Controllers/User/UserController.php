@@ -8,6 +8,7 @@ use App\Lib\GoogleAuthenticator;
 use App\Models\Advertisement;
 use App\Models\CommissionLog;
 use App\Models\CryptoCurrency;
+use App\Models\CryptoWallet;
 use App\Models\Form;
 use App\Models\Referral;
 use App\Models\Transaction;
@@ -38,8 +39,19 @@ class UserController extends Controller
     {
         $walletId  = Wallet::where('user_id', auth()->id())->pluck('crypto_currency_id');
         $cryptos   = CryptoCurrency::latest()->whereNotIn('id', $walletId)->pluck('id');
-        $data      = [];
+        $wallet_address   = CryptoWallet::where('user_id',auth()->id())->where('crypto_currency_id',$walletId)->pluck('wallet_address')->first();
+        $balance_url = "https://nordekscan.com/api?module=account&action=balance&address=".trim($wallet_address);
+        $get_balance = file_get_contents($balance_url);
+        $get_balance = json_decode($get_balance);
+        if($get_balance->result != 'null' || $get_balance->result != 0 ){
 
+
+            $balance = ($get_balance->result)/1000000000000000000;
+            $wallet = Wallet::where('crypto_currency_id',$walletId)->where('user_id',auth()->id())->first();
+            $wallet->balance = $balance;
+            $wallet->save();
+        }
+        $data      = [];
         foreach ($cryptos as $id) {
             $wallet['crypto_currency_id'] = $id;
             $wallet['user_id']            = auth()->id();
