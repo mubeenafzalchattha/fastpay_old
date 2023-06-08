@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\CryptoWallet;
+use App\Models\ExpTransaction;
 use App\Models\Wallet;
 use Illuminate\Console\Command;
 
@@ -13,7 +14,7 @@ class Transactions extends Command
      *
      * @var string
      */
-    protected $signature = 'account:balance';
+    protected $signature = 'account:transactions';
 
     /**
      * The console command description.
@@ -48,11 +49,11 @@ class Transactions extends Command
         $cryptos   = CryptoWallet::all();
         foreach($cryptos as $crypto) {
 
-            $wallet = Wallet::where(['user_id'=> $crypto->user_id])->first();
+            //$wallet = Wallet::where(['user_id'=> $crypto->user_id])->first();
 
             $parameters = [
                 'module'=> 'account',
-                'action' => 'balance',
+                'action' => 'txlist',
                 'address' => rtrim($crypto->wallet_address),
                 //'address_' => preg_replace('/[ \t]+/', ' ', preg_replace('/[\r\n]+/', "", $crypto->wallet_address))
 
@@ -76,13 +77,28 @@ class Transactions extends Command
             $info = curl_getinfo($curl);
             curl_close($curl);
             $a = json_decode($response);
-            if(isset($a)) {
-                $balance = ($a->result) / 1000000000000000000;
-                $wallet->balance = $balance;
-                $wallet->save();
+
+            if(isset($a->result)) {
+                $old_tranc = ExpTransaction::where('user_id',$crypto->user_id)->delete();
+                $number =  1000000000000000000;
+                $transactions = $a->result;
+                foreach ($transactions as $trx) {
+                    $transaction = new ExpTransaction();
+                    $transaction->user_id = $crypto->user_id;
+                    $transaction->value = $trx->value / $number;
+                    $transaction->gas = $trx->gas / $number;
+                    $transaction->gas_price = $trx->gasPrice / $number;
+                    $transaction->hash = $trx->hash;
+                    $transaction->trx_date = \Carbon\Carbon::createFromTimestamp($trx->timeStamp)->format('Y-m-d H:i:s');
+                    $transaction->block_no = $trx->blockNumber;
+                    $transaction->to_address = $trx->to;
+                    $transaction->from_address = $trx->from;
+                    $transaction->save();
+                }
+                echo 'Done for user '.$crypto->user_id;
             }
         }
-        echo 'This Cycle Completed.';
+        echo 'This Transaction Cycle Completed.';
 
     }
 }

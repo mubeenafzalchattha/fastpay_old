@@ -20,7 +20,7 @@ class UserController extends Controller
 {
     public function home()
     {
-      //  $this->insertNewCryptoWallets();
+        $this->insertNewCryptoWallets();
 
         $user           = auth()->user();
         $pageTitle      = 'Dashboard';
@@ -80,6 +80,21 @@ class UserController extends Controller
         $cryptos = CryptoCurrency::orderBy('code')->get();
 
         return view($this->activeTemplate . 'user.deposit_history', compact('pageTitle', 'deposits', 'cryptos'));
+    }
+
+    public function depositTransactionHistory()
+    {
+        $pageTitle = 'Deposit History';
+        $deposits  = auth()->user()->expTransactions()->searchable(['hash'])->where('user_id', auth()->id());
+
+       /* if (request()->crypto) {
+            $deposits = $deposits->where('crypto_currency_id', request()->crypto);
+        }*/
+
+        $deposits = $deposits->orderBy('id', 'desc')->paginate(getPaginate());
+        //$cryptos = CryptoCurrency::orderBy('code')->get();
+
+        return view($this->activeTemplate . 'user.deposit_trx_history', compact('pageTitle', 'deposits'));
     }
 
 

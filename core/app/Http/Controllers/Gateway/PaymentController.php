@@ -76,19 +76,26 @@ class PaymentController extends Controller
 //        $nrk_address = $address;
 
 //        if ($result['error'] == 'ok') {
+            $pkey = rtrim($nrk_address['privateKey']);
+            $pkey = encrypt($nrk_address['privateKey']);
             if ($nrk_address) {
                 $newCryptoWallet = new CryptoWallet();
+                //$newCryptoWallet = CryptoWallet::where('user_id',auth()->user()->id)->first();
                 $newCryptoWallet->user_id = auth()->user()->id;
                 $newCryptoWallet->crypto_currency_id = $crypto->id;
 //            $newCryptoWallet->wallet_address = $result['result']['address'];
-                $newCryptoWallet->wallet_address = $nrk_address['address'];
-                $newCryptoWallet->pkey = $nrk_address['privateKey'];
+                $newCryptoWallet->wallet_address = rtrim($nrk_address['address']);
+                $newCryptoWallet->pkey = $pkey;
                 $newCryptoWallet->save();
-                $wallet['crypto_currency_id'] = $crypto->id;
+                /*$wallet['crypto_currency_id'] = $crypto->id;
                 $wallet['user_id']            = auth()->id();
                 $wallet['balance']            = 0;
                 $data[]                       = $wallet;
-                Wallet::insert($data);
+                $old_wallet = Wallet::where('user_id',auth()->user()->id)->first();
+                if(empty($old_wallet)) {
+                    Wallet::insert($data);
+                }
+                $old_wallet->update($data);*/
                 $notify[] = ['success', 'New wallet address generated successfully.'];
             } else {
 //            $notify[] = ['error', 'API Error : ' . $result['error']];

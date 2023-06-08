@@ -61,6 +61,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
                 //Report
                 Route::any('deposit/history', 'depositHistory')->name('deposit.history');
+                Route::any('deposit/transactions', 'depositTransactionHistory')->name('deposit.transaction.history');
 
                 // Transactions
                 Route::get('transactions', 'transactionIndex')->name('transaction.index');

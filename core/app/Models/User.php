@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->hasMany(Deposit::class)->where('status', '!=', Status::PAYMENT_INITIATE);
     }
 
+    public function expTransactions()
+    {
+        return $this->hasMany(ExpTransaction::class);
+    }
+
     public function withdrawals()
     {
         return $this->hasMany(Withdrawal::class)->where('status', '!=', Status::PAYMENT_INITIATE);

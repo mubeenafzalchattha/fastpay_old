@@ -58,6 +58,7 @@
                                 <ul class="sub-menu">
                                     <li><a href="{{ route('ticket.index') }}">@lang('Support')</a></li>
                                     <li><a href="{{ route('user.deposit.history') }}">@lang('Deposits')</a></li>
+                                    <li><a href="{{ route('user.deposit.transaction.history') }}">@lang('Deposits Transactions')</a></li>
                                     <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>
                                     <li><a href="{{ route('user.referral.commissions.trade') }}">@lang('Referral')</a></li>
                                     <li><a href="{{ route('user.change.password') }}">@lang('Password')</a></li>

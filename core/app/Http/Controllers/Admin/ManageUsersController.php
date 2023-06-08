@@ -262,7 +262,7 @@ class ManageUsersController extends Controller
         return back()->withNotify($notify);
     }
 
-    public function login($id){
+    public function login($id) {
         Auth::loginUsingId($id);
         return to_route('user.home');
     }
@@ -326,6 +326,7 @@ class ManageUsersController extends Controller
         $pageTitle = 'Notification to Verified Users';
 
         return view('admin.users.notification_all', compact('pageTitle','users'));
+
     }
 
     public function sendNotificationAll(Request $request)

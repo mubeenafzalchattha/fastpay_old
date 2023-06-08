@@ -10,7 +10,7 @@
                             <li><a href="{{ route('user.wallets') }}" class="btn btn-sm btn-outline--base @if (!request()->id) active @endif">@lang('All')</a></li>
                             @foreach ($wallets as $wallet)
                                 <li>
-                                    <a href="{{ route('user.wallets.single', [$wallet->crypto->id, $wallet->crypto->code]) }}" class="btn btn-sm btn-outline--base @if (request()->id == $wallet->crypto->id) active @endif"><span>{{ $wallet->crypto->code }}</span> ({{ $cryptoWallets->where('crypto_id', $wallet->crypto_id)->count() }}) {{ showAmount($wallet->balance, 8) }}</a>
+                                    <a href="{{ route('user.wallets.single', [$wallet->crypto->id, $wallet->crypto->code]) }}" class="btn btn-sm btn-outline--base @if (request()->id == $wallet->crypto->id) active @endif"><span>{{ $wallet->crypto->code }}</span> {{--({{ $cryptoWallets->where('crypto_id', $wallet->crypto_id)->count() }})--}} {{ showAmount($wallet->balance, 8) }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -26,7 +26,8 @@
                                     </div>
 
                                     <div class="mt-2 d-flex flex-wrap justify-content-center">
-                                        @if(!isset($cryptoWallets) && empty($cryptoWallets))
+
+                                        @if(blank($cryptoWallets))
                                         <a href="{{ route('user.wallets.generate', $wallet->crypto->code) }}" class="link-btn m-2"><i class="las la-plus"></i> @lang('Generate New') {{ $wallet->crypto->code }} @lang('Address')</a>
                                         @endif
                                         <a href="{{ route('user.withdraw', $wallet->crypto->code) }}" class="link-btn m-2"><i class="las la-credit-card"></i> @lang('Withdraw') {{ $wallet->crypto->code }}</a>

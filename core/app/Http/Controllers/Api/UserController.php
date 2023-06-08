@@ -26,7 +26,7 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-      //  $this->insertNewCryptoWallets();
+        $this->insertNewCryptoWallets();
 
         $user                = auth()->user();
         $wallets             = Wallet::where('user_id', $user->id)
@@ -106,7 +106,7 @@ class UserController extends Controller
 
     protected function insertNewCryptoWallets()
     {
-        /*$walletId  = Wallet::where('user_id', auth()->id())->pluck('crypto_currency_id');
+        $walletId  = Wallet::where('user_id', auth()->id())->pluck('crypto_currency_id');
         $cryptos   = CryptoCurrency::latest()->whereNotIn('id', $walletId)->pluck('id');
         $data      = [];
 
@@ -119,8 +119,8 @@ class UserController extends Controller
 
         if (!empty($data)) {
             Wallet::insert($data);
-        }*/
-        $walletId  = Wallet::where('user_id', auth()->id())->pluck('crypto_currency_id');
+        }
+        /*$walletId  = Wallet::where('user_id', auth()->id())->pluck('crypto_currency_id');
         $cryptos   = CryptoCurrency::latest()->whereNotIn('id', $walletId)->pluck('id');
         $wallet_address   = CryptoWallet::where('user_id',auth()->id())->where('crypto_currency_id',$walletId)->pluck('wallet_address')->first();
         $balance_url = "https://nordekscan.com/api?module=account&action=balance&address=".trim($wallet_address);
@@ -144,7 +144,7 @@ class UserController extends Controller
 
         if (!empty($data)) {
             Wallet::insert($data);
-        }
+        }*/
     }
 
     protected function getTradeData($scope)

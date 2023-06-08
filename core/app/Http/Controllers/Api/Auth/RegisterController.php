@@ -122,7 +122,6 @@ class RegisterController extends Controller
 
     }
 
-
     /**
      * Create a new user instance after a valid registration.
      *
@@ -157,7 +156,7 @@ class RegisterController extends Controller
 
         $user->kv = $general->kv ? Status::UNVERIFIED : Status::VERIFIED;
         $user->ev = $general->ev ? Status::VERIFIED : Status::UNVERIFIED;
-//       $user->ev = $general->ev ? Status::UNVERIFIED : Status::VERIFIED;
+//      $user->ev = $general->ev ? Status::UNVERIFIED : Status::VERIFIED;
         $user->sv = $general->sv ? Status::UNVERIFIED : Status::VERIFIED;
         $user->ts = 0;
         $user->tv = 1;
@@ -198,8 +197,6 @@ class RegisterController extends Controller
         $userLogin->browser = @$userAgent['browser'];
         $userLogin->os = @$userAgent['os_platform'];
         $userLogin->save();
-
-
         return $user;
     }
 

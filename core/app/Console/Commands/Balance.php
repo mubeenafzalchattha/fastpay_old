@@ -76,6 +76,7 @@ class Balance extends Command
             $info = curl_getinfo($curl);
             curl_close($curl);
             $a = json_decode($response);
+
             if(isset($a)) {
                 $balance = ($a->result) / 1000000000000000000;
                 $wallet->balance = $balance;
