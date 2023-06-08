@@ -20,9 +20,12 @@ class ProfileController extends Controller
     public function submitProfile(Request $request)
     {
         $request->validate([
-            'firstname' => 'required|string',
-            'lastname'  => 'required|string',
-            'image'     => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])]
+            'firstname'     => 'required|string',
+            'lastname'      => 'required|string',
+            'identity_no'      => 'required|string',
+            'image'         => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_front'      => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_back'       => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])]
         ], [
             'firstname.required' => 'First name field is required',
             'lastname.required'  => 'Last name field is required'
@@ -31,7 +34,8 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
+        $user->lastname  = $request->lastname;
+        $user->identity_no  = $request->identity_no;
 
         $user->address = [
             'address' => $request->address,
@@ -41,11 +45,15 @@ class ProfileController extends Controller
             'city'    => $request->city,
         ];
 
-        if ($request->hasFile('image')) {
-            $fileName = fileUploader($request->image, getFilePath('userProfile'), getFileSize('userProfile'), @$user->image);
-            $user->image = $fileName;
+        if ($request->hasFile('id_back')) {
+            $id_back = fileUploader($request->id_back, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_back);
+            $user->id_back = $id_back;
         }
 
+        if ($request->hasFile('id_front')) {
+            $id_front = fileUploader($request->id_front, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_front);
+            $user->id_front = $id_front;
+        }
         $user->save();
         $notify[] = ['success', 'Profile updated successfully'];
         return back()->withNotify($notify);

@@ -26,8 +26,9 @@
                                     </div>
 
                                     <div class="mt-2 d-flex flex-wrap justify-content-center">
+                                        @if(!isset($cryptoWallets) && empty($cryptoWallets))
                                         <a href="{{ route('user.wallets.generate', $wallet->crypto->code) }}" class="link-btn m-2"><i class="las la-plus"></i> @lang('Generate New') {{ $wallet->crypto->code }} @lang('Address')</a>
-
+                                        @endif
                                         <a href="{{ route('user.withdraw', $wallet->crypto->code) }}" class="link-btn m-2"><i class="las la-credit-card"></i> @lang('Withdraw') {{ $wallet->crypto->code }}</a>
                                     </div>
                                 @endif

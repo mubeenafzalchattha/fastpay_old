@@ -40,6 +40,10 @@
                                     <span class="value">{{ @$user->address->country }}</span>
                                 </li>
                                 <li>
+                                    <span class="caption">@lang('Identity/Passport No.')</span>
+                                    <span class="value">{{ @$user->identity_no }}</span>
+                                </li>
+                                <li>
                                     <span class="caption">@lang('KYC')</span>
                                     @if ($user->kv == 1)
                                         <span class="value"><span class="badge badge--success">@lang('Verified')</span></span>
@@ -83,6 +87,34 @@
                                         <label for="address">@lang('Address')</label>
                                         <input type="text" class="form-control" id="address" name="address" placeholder="@lang('Address')" value="{{ @$user->address->address }}" required="">
                                     </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="address">@lang('Identity/Passport No.')</label>
+                                        <input type="text" class="form-control" id="identity_no" name="identity_no" placeholder="{{'User Identity'}}" value="{{ @$user->identity_no }}" required="">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                    <div class="profile-thumb">
+                                        <div class="avatar-preview">
+                                            <div class="idFrontUpload" style="background-image: url({{ getImage($profileImage->path . '/' . @$user->id_front, null, true) }})"></div>
+                                        </div>
+                                        <div class="avatar-edit" title="@lang('jpg, jpeg, png image only')">
+                                            <input type='file' class="idFrontUpload" id="idFrontUpload" name="id_front" accept=".jpg, .jpeg, .png" />
+                                            <label for="idFrontUpload"><i class="las la-upload"></i> @lang('Update')</label>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <div class="profile-thumb">
+                                            <div class="avatar-preview">
+                                                <div class="idBackUpload" style="background-image: url({{ getImage($profileImage->path . '/' . @$user->id_back, null, true) }})"></div>
+                                            </div>
+                                            <div class="avatar-edit" title="@lang('jpg, jpeg, png image only')">
+                                                <input type='file' class="idBackUpload" id="idBackUpload" name="id_back" accept=".jpg, .jpeg, .png" />
+                                                <label for="idBackUpload"><i class="las la-upload"></i> @lang('Update')</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group  mb-0 mt-3">
                                     <button type="submit" class="btn--base w-100">@lang('Save Changes')</button>
@@ -125,6 +157,34 @@
             -o-border-radius: 15px;
             display: block;
             border: 2px solid #ffffff;
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+            background-size: cover;
+            background-position: top;
+        }
+        .idFrontUpload {
+            width: 12.5rem;
+            height: 12.5rem;
+            border-radius: 15px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            -ms-border-radius: 15px;
+            -o-border-radius: 15px;
+            display: block;
+            /*border: 2px solid #ffffff;*/
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+            background-size: cover;
+            background-position: top;
+        }
+         .idBackUpload {
+            width: 12.5rem;
+            height: 12.5rem;
+            border-radius: 15px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            -ms-border-radius: 15px;
+            -o-border-radius: 15px;
+            display: block;
+            /*border: 2px solid #ffffff;*/
             box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
             background-size: cover;
             background-position: top;
@@ -184,6 +244,52 @@
                 $(".profilePicPreview").css('background-image', 'none');
                 $(".profilePicPreview").removeClass('has-image');
             });
+            // --ID Front--  //
+            function idFrontURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var preview = $(input).parents('.profile-thumb').find('.idFrontUpload');
+                        $(preview).css('background-image', 'url(' + e.target.result + ')');
+                        $(preview).addClass('has-image');
+                        $(preview).hide();
+                        $(preview).fadeIn(650);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".idFrontUpload").on('change', function() {
+                idFrontURL(this);
+            });
+
+            $(".remove-image").on('click', function() {
+                $(".profilePicPreview").css('background-image', 'none');
+                $(".profilePicPreview").removeClass('has-image');
+            });
+            // --ID Front--  //
+            // --ID Back--  //
+            function idBackURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var preview = $(input).parents('.profile-thumb').find('.idBackUpload');
+                        $(preview).css('background-image', 'url(' + e.target.result + ')');
+                        $(preview).addClass('has-image');
+                        $(preview).hide();
+                        $(preview).fadeIn(650);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".idBackUpload").on('change', function() {
+                idBackURL(this);
+            });
+
+            $(".remove-image").on('click', function() {
+                $(".profilePicPreview").css('background-image', 'none');
+                $(".profilePicPreview").removeClass('has-image');
+            });
+            // --ID Back--  //
         })(jQuery);
     </script>
 @endpush

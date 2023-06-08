@@ -53,12 +53,17 @@ class PaymentController extends Controller
             return back()->withNotify($notify);
         }
         $get_last_address_date = CryptoWallet::where('user_id',auth()->user()->id)->where('crypto_currency_id',$crypto->id)/*->orderby('created_at','desc')*/->latest()->first();
-        $date = Carbon::parse($get_last_address_date->created_at);
-        $now = Carbon::now();
+        /*$diff = 31;
+        if() {
+            $date = Carbon::parse($get_last_address_date->created_at);
+            $now = Carbon::now();
+            $diff = $date->diffInDays($now);
+        }*/
 
-        $diff = $date->diffInDays($now);
-        if($diff>30) {
-            $nrk_address = file_get_contents('https://fastpay.nordek.dev/NRK/address.php');
+        if(!$get_last_address_date) {
+            $nrk_address = file_get_contents('https://fastpay.nordek.dev/address.php');
+            $nrk_address = json_decode($nrk_address,true);
+           // dd($nrk_address['privateKey']);
             /*
                     $coinPayAcc = gs();
                     $cps = new CoinPaymentHosted();
@@ -76,15 +81,21 @@ class PaymentController extends Controller
                 $newCryptoWallet->user_id = auth()->user()->id;
                 $newCryptoWallet->crypto_currency_id = $crypto->id;
 //            $newCryptoWallet->wallet_address = $result['result']['address'];
-                $newCryptoWallet->wallet_address = $nrk_address;
+                $newCryptoWallet->wallet_address = $nrk_address['address'];
+                $newCryptoWallet->pkey = $nrk_address['privateKey'];
                 $newCryptoWallet->save();
+                $wallet['crypto_currency_id'] = $crypto->id;
+                $wallet['user_id']            = auth()->id();
+                $wallet['balance']            = 0;
+                $data[]                       = $wallet;
+                Wallet::insert($data);
                 $notify[] = ['success', 'New wallet address generated successfully.'];
             } else {
 //            $notify[] = ['error', 'API Error : ' . $result['error']];
                 $notify[] = ['error', 'API Error : ' . 'error'];
             }
         } else {
-            $notify[] = ['success', 'New wallet address cannot be generated right now.'];
+            $notify[] = ['success', 'New wallet address cannot be generated.'];
 
         }
 

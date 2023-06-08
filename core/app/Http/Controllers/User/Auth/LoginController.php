@@ -58,7 +58,6 @@ class LoginController extends Controller
     {
 
         $this->validateLogin($request);
-
         $request->session()->regenerateToken();
 
         if(!verifyCaptcha()){

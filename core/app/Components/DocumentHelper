@@ -1,0 +1,31 @@
+<?php
+
+
+namespace App\Components ;
+
+use Illuminate\Support\Facades\Auth;
+
+class DocumentHelper {
+
+
+    public static function saveDocument($image,$type)
+    {
+        $id = Auth::user()->id;
+        $folder_path = './documents/users/'.$id;
+        $filename = time() . ''.$type . '.png';
+        $path_filename_ext = $folder_path . '/' . $filename;
+        if (is_dir($folder_path) === false) {
+            mkdir($folder_path);
+        }
+
+        if (file_exists($path_filename_ext)) {
+        } else {
+            move_uploaded_file($filename, $path_filename_ext);
+        }
+        $file = fopen($path_filename_ext, 'wb');
+        fwrite($file, base64_decode($image));
+        fclose($file);
+        return $filename;
+
+    }
+}

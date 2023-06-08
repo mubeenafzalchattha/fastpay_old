@@ -20,7 +20,7 @@ class UserController extends Controller
 {
     public function home()
     {
-        $this->insertNewCryptoWallets();
+      //  $this->insertNewCryptoWallets();
 
         $user           = auth()->user();
         $pageTitle      = 'Dashboard';
@@ -39,18 +39,21 @@ class UserController extends Controller
     {
         $walletId  = Wallet::where('user_id', auth()->id())->pluck('crypto_currency_id');
         $cryptos   = CryptoCurrency::latest()->whereNotIn('id', $walletId)->pluck('id');
-        $wallet_address   = CryptoWallet::where('user_id',auth()->id())->where('crypto_currency_id',$walletId)->pluck('wallet_address')->first();
-        $balance_url = "https://nordekscan.com/api?module=account&action=balance&address=".trim($wallet_address);
-        $get_balance = file_get_contents($balance_url);
-        $get_balance = json_decode($get_balance);
-        if($get_balance->result != 'null' || $get_balance->result != 0 ){
-
-
-            $balance = ($get_balance->result)/1000000000000000000;
-            $wallet = Wallet::where('crypto_currency_id',$walletId)->where('user_id',auth()->id())->first();
-            $wallet->balance = $balance;
-            $wallet->save();
-        }
+//        $wallet_id = $walletId->first();
+//        if(isset($wallet_id) && !empty($wallet_id)) {
+//            $wallet_address = CryptoWallet::where(['user_id'=> auth()->id(),'crypto_currency_id'=> $wallet_id])->pluck('wallet_address')->first();
+//            $balance_url = "https://nordekscan.com/api?module=account&action=balance&address=".trim($wallet_address);
+//            //dd($balance_url);
+//
+//            $get_balance = file_get_contents(trim($balance_url));
+//            $get_balance = json_decode($get_balance);
+//            if ($get_balance->result != 'null' || $get_balance->result != 0) {
+//                $balance = ($get_balance->result) / 1000000000000000000;
+//                $wallet = Wallet::where('crypto_currency_id', $wallet_id)->where('user_id', auth()->id())->first();
+//                $wallet->balance = $balance;
+//                $wallet->save();
+//            }
+//        }
         $data      = [];
         foreach ($cryptos as $id) {
             $wallet['crypto_currency_id'] = $id;
@@ -204,7 +207,7 @@ class UserController extends Controller
         $form = Form::where('act', 'kyc')->first();
         $formData = $form->form_data;
         $formProcessor = new FormProcessor();
-        $validationRule = $formProcessor->valueValidation($formData);
+        $valipldationRule = $formProcessor->valueValidation($formData);
         $request->validate($validationRule);
         $userData = $formProcessor->processFormData($request, $formData);
         $user = auth()->user();
@@ -246,16 +249,16 @@ class UserController extends Controller
         }
         $request->validate([
             'firstname' => 'required',
-            'lastname' => 'required',
+            'lastname'  => 'required',
         ]);
         $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->address = [
-            'country' => @$user->address->country,
-            'address' => $request->address,
-            'state' => $request->state,
-            'zip' => $request->zip,
-            'city' => $request->city,
+        $user->lastname  = $request->lastname;
+        $user->address  = [
+            'country'   => @$user->address->country,
+            'address'   => $request->address,
+            'state'     => $request->state,
+            'zip'       => $request->zip,
+            'city'      => $request->city,
         ];
         $user->profile_complete  = 1;
         $user->save();

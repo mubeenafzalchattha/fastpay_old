@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Components\DocumentHelper;
 use App\Http\Controllers\Controller;
 use App\Lib\FormProcessor;
 use App\Models\CommissionLog;
@@ -25,7 +26,7 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-        $this->insertNewCryptoWallets();
+      //  $this->insertNewCryptoWallets();
 
         $user                = auth()->user();
         $wallets             = Wallet::where('user_id', $user->id)
@@ -206,8 +207,11 @@ class UserController extends Controller
             ]);
         }
         $validator = Validator::make($request->all(), [
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'firstname'     => 'required',
+            'lastname'      => 'required',
+            'identity_no'   => 'required',
+            'id_front'      => [new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_back'       => [ new FileTypeValidate(['jpg', 'jpeg', 'png'])],
         ]);
 
         if ($validator->fails()) {
@@ -219,12 +223,22 @@ class UserController extends Controller
         }
 
 
-        $user->firstname = $request->firstname;
-        $user->lastname  = $request->lastname;
+        $user->firstname    = $request->firstname;
+        $user->lastname     = $request->lastname;
         $user->identity_no  = $request->identity_no;
 
-        $user->id_front  = $request->id_front;
-        $user->id_back  = $request->id_back;
+       // $user->id_front  = DocumentHelper::saveDocument($user->id_front,'front');
+       // $user->id_back   = DocumentHelper::saveDocument($user->id_back,'back');
+
+        if ($request->hasFile('id_front')) {
+            $id_front = fileUploader($request->id_front, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_front);
+            $user->id_front = $id_front;
+        }
+        if ($request->hasFile('id_back')) {
+            $id_back = fileUploader($request->id_back, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_back);
+            $user->id_back = $id_back;
+        }
+
         $user->address   = [
             'country' => @$user->address->country,
             'address' => $request->address,
@@ -578,9 +592,12 @@ class UserController extends Controller
     public function submitProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'firstname' => 'required',
-            'lastname'  => 'required',
-            'image'     => ['nullable', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'firstname'     => 'required',
+            'lastname'      => 'required',
+            'identity_no'      => 'required',
+            'image'         => ['nullable', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_front'      => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_back'       => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
         ]);
 
         if ($validator->fails()) {
@@ -594,6 +611,12 @@ class UserController extends Controller
         $user = auth()->user();
         $user->firstname = $request->firstname;
         $user->lastname  = $request->lastname;
+
+        $user->identity_no  = $request->identity_no;
+
+       // $user->id_front  = DocumentHelper::saveDocument($user->id_front,'front');
+       // $user->id_back   = DocumentHelper::saveDocument($user->id_back,'back');
+
         $user->address = [
             'country' => @$user->address->country,
             'address' => $request->address,
@@ -605,6 +628,14 @@ class UserController extends Controller
         if ($request->hasFile('image')) {
             $fileName = fileUploader($request->image, getFilePath('userProfile'), getFileSize('userProfile'), @$user->image);
             $user->image = $fileName;
+        }
+        if ($request->hasFile('id_front')) {
+            $id_front = fileUploader($request->id_front, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_front);
+            $user->id_front = $id_front;
+        }
+        if ($request->hasFile('id_back')) {
+            $id_back = fileUploader($request->id_back, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_back);
+            $user->id_back = $id_back;
         }
 
         $user->save();
@@ -664,6 +695,8 @@ class UserController extends Controller
         $notify[] = 'User information';
         $user = auth()->user();
         $user->image = getImage(getFilePath('userProfile') . '/' . $user->image, null, true);
+        $user->id_front = getImage(getFilePath('userProfile') . '/' . $user->id_front, null, true);
+        $user->id_back = getImage(getFilePath('userProfile') . '/' . $user->id_back, null, true);
 
         return response()->json([
             'remark'  => 'user_info',

@@ -6,6 +6,7 @@ use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
 use App\Models\CryptoCurrency;
+use App\Models\CryptoWallet;
 use App\Models\FiatCurrency;
 use App\Models\FiatGateway;
 use App\Models\AdLimit;
@@ -121,6 +122,7 @@ class AdvertisementController extends Controller
             }
         }
 
+        $balance     = Wallet::query();
         $crypto      = CryptoCurrency::query();
         $fiatGateway = FiatGateway::query();
         $fiat        = FiatCurrency::query();
@@ -135,6 +137,13 @@ class AdvertisementController extends Controller
 
         if (!$crypto) {
             return ['error', 'Crypto currency not found or disabled'];
+        }
+        $balance = $balance->where('crypto_currency_id', $request->crypto_id)->where('user_id',auth()->user()->id)->first();
+        if ($balance->balance <= $request->min) {
+            return ['error', 'Insufficient Balance to make this request'];
+        }
+        if ($balance->balance <= $request->max) {
+            return ['error', 'Maximum Limit is more than the balance.'];
         }
 
         $fiatGateway = $fiatGateway->where('id', $request->fiat_gateway_id)->first();

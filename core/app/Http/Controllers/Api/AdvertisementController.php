@@ -11,6 +11,7 @@ use App\Models\FiatGateway;
 use App\Models\AdLimit;
 use App\Models\PaymentWindow;
 use App\Models\Review;
+use App\Models\Wallet;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -331,7 +332,7 @@ class AdvertisementController extends Controller {
                 return ['error', 'You have reached the maximum limit of creating advertisement'];
             }
         }
-
+        $balance     = Wallet::query();
         $crypto      = CryptoCurrency::query();
         $fiatGateway = FiatGateway::query();
         $fiat        = FiatCurrency::query();
@@ -346,6 +347,14 @@ class AdvertisementController extends Controller {
 
         if (!$crypto) {
             return ['error', 'Crypto currency not found or disabled'];
+        }
+
+        $balance = $balance->where('crypto_currency_id', $request->crypto_id)->where('user_id',auth()->user()->id)->first();
+        if ($balance->balance <= $request->min) {
+            return ['error', 'Insufficient Balance to make this request'];
+        }
+        if ($balance->balance <= $request->max) {
+            return ['error', 'Maximum Limit is more than the balance.'];
         }
 
         $fiatGateway = $fiatGateway->where('id', $request->fiat_gateway_id)->first();
