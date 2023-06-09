@@ -14,4 +14,15 @@ class ExpTransaction extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function wallet()
+    {
+        return $this->belongsTo(Wallet::class);
+    }
+
+    public function cryptoWallet()
+    {
+        return $this->hasOne(CryptoWallet::class,'user_id','user_id');
+    }
+
+
 }
