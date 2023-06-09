@@ -39,15 +39,14 @@ class Balance extends Command
      */
     public function handle()
     {
-
         $url = 'https://nordekscan.com/api';
         $headers = [
             'Accepts: application/json',
         ];
 
         $cryptos   = CryptoWallet::all();
+        
         foreach($cryptos as $crypto) {
-
             $wallet = Wallet::where(['user_id'=> $crypto->user_id])->first();
 
             $parameters = [
@@ -64,7 +63,7 @@ class Balance extends Command
             // Set cURL options
             curl_setopt_array($curl, array(
                 CURLOPT_URL            => $request, // set the request URL
-           //     CURLOPT_HTTPHEADER     => $headers, // set the headers
+                //     CURLOPT_HTTPHEADER     => $headers, // set the headers
                 CURLOPT_RETURNTRANSFER => 1, // ask for raw response instead of bool
                 CURLOPT_SSL_VERIFYHOST => 0, // ask for raw response instead of bool
                 CURLOPT_SSL_VERIFYPEER => 0, // ask for raw response instead of bool
@@ -84,6 +83,5 @@ class Balance extends Command
             }
         }
         echo 'This Cycle Completed.';
-
     }
 }

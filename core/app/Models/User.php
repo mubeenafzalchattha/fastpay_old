@@ -96,8 +96,8 @@ class User extends Authenticatable
         return $this->hasMany(User::class,'ref_by');
     }
 
-    public function allReferrals(){
-
+    public function allReferrals()
+    {
         return $this->referrals()->with('refBy');
     }
 

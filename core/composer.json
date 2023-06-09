@@ -22,7 +22,7 @@
         "messagebird/php-rest-api": "^1.20",
         "phpmailer/phpmailer": "^6.2",
         "sendgrid/sendgrid": "^7.6",
-        "simplesoftwareio/simple-qrcode": "^4.2",
+        "simplesoftwareio/simple-qrcode": "~4",
         "textmagic/sdk": "dev-master",
         "twilio/sdk": "^6.23",
         "vonage/client": "^2.4"
