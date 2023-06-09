@@ -27,7 +27,7 @@ class AutoTransferFundsFunds extends Command
      */
     public function handle()
     {
-        $exp = ExpTransaction::where(['move_to_admin'=>0,'user_id'=>6])->get();//where admin_move =0
+        $exp = ExpTransaction::where(['move_to_admin'=>0])->get();//where admin_move =0
         echo ($exp);
 
         foreach($exp as $row){
@@ -35,17 +35,17 @@ class AutoTransferFundsFunds extends Command
             $url = 'http://localhost:6545/'.$method;
             
             $arr = [];
-            $arr['PrivateKey'] = $privateKey;
-            $arr['ToAddress'] = $to;
-            $arr['Amount'] = $amount;
+            $arr['PrivateKey'] = $row->pkey;
+            $arr['ToAddress'] = $row->toaddress; 
+            $arr['Amount'] = $row->amount;
+            
+            // $response = CurlRequest::curlPostContent($url, $arr);
+            // $response = json_decode($response);
 
-            $response = CurlRequest::curlPostContent($url, $arr);
-            $response = json_decode($response);
-
-            if ($response->status == 'error') {
-                print_r($response->message);
-            }
-            print_r($response->message);
+            // if ($response->status == 'error') {
+            //     print_r($response->message);
+            // }
+            // print_r($response->message);
             echo 'This Cycle Completed.';
         }
     }
