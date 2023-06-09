@@ -84,6 +84,7 @@ Route::namespace('Api')->name('api.')->group(function () {
 
                     //Report
                     Route::get('deposit-history', 'depositHistory')->name('deposit.history');
+                    Route::get('deposit-transactions-history', 'depositTransactionHistory')->name('deposit.transactions.history');
                     Route::get('transactions', 'transactions')->name('transactions');
 
                     //Wallets

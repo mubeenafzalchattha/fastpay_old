@@ -164,6 +164,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -192,7 +193,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Status'=>App\Constants\Status::class
+        'Status'=>App\Constants\Status::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         // ...
     ])->toArray(),
 

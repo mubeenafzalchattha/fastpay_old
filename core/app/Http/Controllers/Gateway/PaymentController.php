@@ -27,9 +27,9 @@ class PaymentController extends Controller
     {
         $pageTitle = 'Your Receiving Wallets';
         $wallets = Wallet::where('user_id', auth()->id())->with('crypto')->latest()->get();
-        $cryptoWallets = CryptoWallet::where('user_id', auth()->id())->latest()->with('crypto')->paginate(getPaginate());
+        $cryptoWallet = CryptoWallet::where('user_id', auth()->id())->latest()->with('crypto')->first();//->paginate(getPaginate());
 
-        return view($this->activeTemplate . 'user.wallet', compact('pageTitle', 'wallets', 'cryptoWallets'));
+        return view($this->activeTemplate . 'user.wallet', compact('pageTitle', 'wallets', 'cryptoWallet'));
     }
 
     public function singleWallet($id, $code)
@@ -37,10 +37,10 @@ class PaymentController extends Controller
         $pageTitle     = $code . ' Wallets';
         $crypto        = CryptoCurrency::findOrFail($id);
         $wallets       = Wallet::where('user_id', auth()->user()->id)->with('crypto')->latest()->get();
-        $cryptoWallets = CryptoWallet::where('user_id', auth()->user()->id)->where('crypto_currency_id', $crypto->id)->latest()->with('crypto')->paginate(getPaginate());
+        $cryptoWallet = CryptoWallet::where('user_id', auth()->user()->id)->where('crypto_currency_id', $crypto->id)->latest()->with('crypto')->first();/*->paginate(getPaginate())*/;
         $emptyMessage  = 'No wallet found';
 
-        return view($this->activeTemplate . 'user.wallet', compact('pageTitle', 'wallets', 'cryptoWallets', 'crypto', 'emptyMessage'));
+        return view($this->activeTemplate . 'user.wallet', compact('pageTitle', 'wallets', 'cryptoWallet', 'crypto', 'emptyMessage'));
     }
 
     public function walletGenerate($code)

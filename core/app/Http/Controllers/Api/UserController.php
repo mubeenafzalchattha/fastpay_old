@@ -342,6 +342,27 @@ class UserController extends Controller
         ]);
     }
 
+    public function depositTransactionHistory()
+    {
+
+        $deposits  = auth()->user()->expTransactions()->searchable(['hash'])->where('user_id', auth()->id());
+
+        $deposits = $deposits->orderBy('id', 'desc')->paginate(getPaginate());
+        $notify[] = 'Deposit data';
+
+        return response()->json([
+            'remark' => 'deposit transactions',
+            'status' => 'success',
+            'message' => ['success' => $notify],
+            'data' => [
+                'crypto_image_path' => getFilePath('crypto'),
+                'deposits'         => $deposits,
+            ]
+        ]);
+
+    }
+
+
     public function transactions(Request $request)
     {
         $remarks      = Transaction::distinct('remark')->whereNotNull('remark')->get('remark');
@@ -596,8 +617,8 @@ class UserController extends Controller
             'lastname'      => 'required',
             'identity_no'      => 'required',
             'image'         => ['nullable', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
-            'id_front'      => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
-            'id_back'       => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_front'      => ['nullable', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_back'       => ['nullable', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
         ]);
 
         if ($validator->fails()) {

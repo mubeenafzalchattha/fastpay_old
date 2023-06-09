@@ -27,7 +27,7 @@
 
                                     <div class="mt-2 d-flex flex-wrap justify-content-center">
 
-                                        @if(blank($cryptoWallets))
+                                        @if(blank($cryptoWallet))
                                         <a href="{{ route('user.wallets.generate', $wallet->crypto->code) }}" class="link-btn m-2"><i class="las la-plus"></i> @lang('Generate New') {{ $wallet->crypto->code }} @lang('Address')</a>
                                         @endif
                                         <a href="{{ route('user.withdraw', $wallet->crypto->code) }}" class="link-btn m-2"><i class="las la-credit-card"></i> @lang('Withdraw') {{ $wallet->crypto->code }}</a>
@@ -46,23 +46,29 @@
                                             <th>@lang('Currency')</th>
                                             <th>@lang('Generated at')</th>
                                             <th>@lang('Wallet Address')</th>
+                                            <th>@lang('QR Code')</th>
                                             <th>@lang('Action')</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($cryptoWallets as $cryptoWallet)
+                                       {{-- @foreach ($cryptoWallets as $cryptoWallet)--}}
+                                       @if (!blank($cryptoWallet))
                                             <tr>
                                                 <td>{{ $cryptoWallet->crypto->code }}</td>
                                                 <td>{{ showDateTime($cryptoWallet->created_at) }}</b></td>
                                                 <td class="copy-text">{{ $cryptoWallet->wallet_address }}</td>
+                                                <td><button type="button" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                                        <i class="fa fa-qrcode" aria-hidden="true"></i>
+                                                    </button></td>
                                                 <td>
                                                     <a href="javascript:void(0)" class="btn btn-outline--base copy-address"><i class="las la-copy"></i> @lang('Copy')</a>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                       {{-- @endforeach--}}
+                                       @endif
                                     </tbody>
                                 </table>
-                                @if (blank($cryptoWallets))
+                                @if (blank($cryptoWallet))
                                     <x-no-data message="No wallet found"></x-no-data>
                                 @endif
                             </div>
@@ -71,13 +77,34 @@
                 </div>
             </div>
 
-            @if ($cryptoWallets->hasPages())
+          {{--  @if ($cryptoWallets->hasPages())
                 <div class="pagination-wrapper">
                     {{ $cryptoWallets->links() }}
                 </div>
-            @endif
+            @endif--}}
         </div>
     </section>
+
+    {{-- APPROVE MODAL --}}
+    <div id="qrModal" class="modal fade" tabindex="-1" role="dialog" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@lang('Wallet Address')</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="la la-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding:2% 23% 0 24%">
+                    {!! QrCode::size(250)->generate($cryptoWallet->wallet_address) !!}
+                </div>
+                <hr>
+                <div class="modal-header">
+                    <p>{{'Scan QR Code'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('script')

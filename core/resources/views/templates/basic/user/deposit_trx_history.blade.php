@@ -33,13 +33,14 @@
                                 <table class="table custom--table">
                                     <thead>
                                         <tr>
-                                            <th>@lang('TRX No.')</th>
+                                            <th>@lang('TXN Hash.')</th>
                                             <th>@lang('Amount')</th>
                                             <th>@lang('Gas')</th>
                                             <th>@lang('Gas Price')</th>
-                                            <th>@lang('Block')</th>
-                                            <th> @lang('To')</th>
-                                            <th> @lang('From')</th>
+                                            {{--<th>@lang('Block')</th>--}}
+                                            <th>@lang('Date')</th>
+                                            {{--<th> @lang('To')</th>
+                                            <th> @lang('From')</th>--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -47,12 +48,13 @@
                                             <tr>
                                                 {{--<td><span class="text--base">{{ __($deposit->crypto->code) }}</span></td>--}}
                                                 <td>{{ $deposit->hash }}</td>
-                                                <td>{{ $deposit->value }}</td>
-                                                <td>{{ $deposit->gas }}</td>
-                                                <td>{{ $deposit->gas_price }}</td>
-                                                <td>{{ $deposit->block }}</td>
-                                                <td>{{ $deposit->to }}</td>
-                                                <td>{{ $deposit->from }}</td>
+                                                <td>{{ showAmount($deposit->value,5) }}</td>
+                                                <td>{{ showAmount($deposit->gas) }}</td>
+                                                <td>{{  showAmount($deposit->gas_price) }}</td>
+                                               {{-- <td>{{ $deposit->block }}</td>--}}
+                                                <td>{{ $deposit->txn_date }}</td>
+                                                {{--<td>{{ $deposit->to_address }}</td>
+                                                <td>{{ $deposit->from_address }}</td>--}}
 
                                                 {{--<td>
                                                     <a href="javascript:void(0)" class="btn btn-outline--base approveBtn" data-id="{{ $deposit->id }}" data-amount="{{ showAmount($deposit->amount, 8) }} {{ __($deposit->crypto->code) }}" data-charge="{{ showAmount($deposit->charge, 8) }} {{ __($deposit->crypto->code) }}" data-after_charge="{{ showAmount($deposit->amount + $deposit->charge, 8) }} {{ __($deposit->crypto->code) }}" data-payable="{{ showAmount($deposit->final_amo, 8) }} {{ __($deposit->crypto->code) }}">

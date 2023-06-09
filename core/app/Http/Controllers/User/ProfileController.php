@@ -24,8 +24,8 @@ class ProfileController extends Controller
             'lastname'      => 'required|string',
             'identity_no'      => 'required|string',
             'image'         => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
-            'id_front'      => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
-            'id_back'       => ['required', new FileTypeValidate(['jpg', 'jpeg', 'png'])]
+            'id_front'      => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'id_back'       => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])]
         ], [
             'firstname.required' => 'First name field is required',
             'lastname.required'  => 'Last name field is required'
