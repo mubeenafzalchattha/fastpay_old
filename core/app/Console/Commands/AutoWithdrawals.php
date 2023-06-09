@@ -1,19 +1,20 @@
 <?php
 
 namespace App\Console\Commands;
-use App\Models\AdminTransactions;
-use App\Models\ExpTransaction;
+
+use App\Models\Withdrawal;
 use Illuminate\Console\Command;
 use App\Lib\CurlRequest;
 
-class AutoTransferFundsFunds extends Command
+class AutoWithdrawals extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'auto-trans:cron';
+    protected $signature = 'auto:withdrawals';
+
     /**
      * The console command description.
      *
@@ -28,24 +29,19 @@ class AutoTransferFundsFunds extends Command
      */
     public function handle()
     {
-        $admin_wallet_address = env('ADMIN_DEPOSIT_ADDRESS');
-        $exp = ExpTransaction::where(['move_to_admin'=>0])
-            ->join('crypto_wallets', function ($join) {
-                $join->
-                on('crypto_wallets.user_id', '=', 'exp_transactions.user_id')->
-                on('crypto_wallets.crypto_currency_id', '=', 'exp_transactions.currency_id');
-            })
-            ->get();
-
+        $admin_wallet_pkey = env('ADMIN_PKEY');
+        $exp = Withdrawal::where(['status'=>2])->get();
+        
         foreach($exp as $row){
+            echo $row.'<br>/n';
             $method = 'sendTransaction';
             // $url = 'http://localhost:6545/'.$method;
             $url = env('CHAIN_URL').$method;
             $arr = [];
-            $arr['PrivateKey'] = decrypt($row->pkey); //decrypt($row->cryptoWallet->pkey);
-            $arr['ToAddress'] = $admin_wallet_address;
-            $arr['Amount'] = $row->value;
-            // print_r($arr);
+            $arr['PrivateKey'] = decrypt($admin_wallet_pkey); //decrypt($row->cryptoWallet->pkey);
+            $arr['ToAddress'] = $row->wallet_address;
+            $arr['Amount'] = $row->payable;
+            // print_r($arr);die;
             $response = CurlRequest::curlPostContent($url, $arr);
             $response = json_decode($response);
             // print_r($response);
@@ -54,19 +50,19 @@ class AutoTransferFundsFunds extends Command
                 /// update admin transactions table
                 $admin = new AdminTransactions();
                 $admin->user_id = $row->user_id;
-                $admin->type = 'deposit';
+                $admin->type = 'withdraw';
                 $admin->currency_id = $row->crypto_currency_id;
-                $admin->amount = $row->value;
-                $admin->address = $row->to_address;
+                $admin->amount = $row->payable;
+                $admin->address = $row->wallet_address;
                 $admin->hash = $response->hash;
-                $admin->description = 'auto transfer to admin';
+                $admin->description = 'user auto withdrawal';
                 $admin->save();
                 
                 // print_r($admin);
 
                 // update exp_transactions here
-                $row->move_to_admin = 1;
-                $row->update_time = now();
+                $row->status = 1;
+                $row->updated_at = now();
                 $row->save();
             }
             echo '<br>This Cycle Completed.';

@@ -171,15 +171,12 @@ var cors = require("cors");
 app.use(cors());
 app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: true }));
-  
-const decimal = 18;
-// var provider = 'https://gaurascan.com/api/eth-rpc';
-// var provider = 'https://testnet-rpc.gaurascan.com';
 
+const decimal = 18;
 var provider = new Web3.providers.HttpProvider(
   "https://mainnet-rpc.nordekscan.com"
 );
-//var provider = new Web3.providers.HttpProvider('https://data-seed-prebsc-1-s1.binance.org:8545/');
+
 const web3 = new Web3(provider);
 
 app.get("/", function (req, res) {
@@ -194,6 +191,13 @@ app.get("/depositAddress", function (req, res) {
   var data = web3.eth.accounts.create();
   data.status = "true";
   res.send(data);
+});
+
+app.get("/getAccount", function (req, res) {
+  var data = {};
+  var queryData = url.parse(req.url, true).query;
+  const account = web3.eth.accounts.privateKeyToAccount(queryData.priv_key);
+  res.send(JSON.stringify(account));
 });
 
 app.get("/getBalance", function (req, res) {
@@ -268,14 +272,22 @@ app.post("/userSendToken", function (req, res) {
       ABIToken,
       param.tokenContractAddress
     );
+
     var account = web3.eth.accounts.privateKeyToAccount(param.PrivateKey);
+    var tx = myContract.methods
+      .transfer(
+        queryData.ToAddress,
+        web3.utils.toWei(queryData.Amount, "ether")
+      )
+      .encodeABI();
+
     web3.eth.accounts
       .signTransaction(
         {
           to: param.tokenContractAddress,
           value: 0,
-          // gas: 84000,
-          gas: 0,
+          gas: 84000,
+          // gas: 0,n
           data: myContract.methods
             .transfer(param.ToAddress, param.Amount)
             .encodeABI(),
@@ -313,25 +325,30 @@ app.post("/userSendToken", function (req, res) {
 app.post("/sendTransaction", function (req, res) {
   var data = {};
   var param = req.body;
-  // console.log('params: '+param.ToAddress)
   try {
-    var account = web3.eth.accounts.privateKeyToAccount(param.PrivateKey);
+    web3.eth.getGasPrice().then((result)=>{
+      var gasPrice = web3.utils.fromWei(result,'ether');
+      amount = param.Amount - (gasPrice * 21000);
+      amount = web3.utils.toWei(String(amount), "ether");
+      
+      var account = web3.eth.accounts.privateKeyToAccount(param.PrivateKey);
+
     web3.eth.accounts
       .signTransaction(
         {
           to: param.ToAddress,
-          value: param.Amount,
-          // gas: 42000
-          gas: 42000,
-        },
+          value: amount, //param.Amount,
+          gas: 21000,
+        },  
         account.privateKey
       )
       .then((signedTransaction) => {
         web3.eth
           .sendSignedTransaction(signedTransaction.rawTransaction)
           .on("error", function (error) {
-            data.message = error.message;
-            data.status = true;
+            data.amount = amount;
+            data.message = error;
+            data.status = false;
             res.send(data);
           })
           .on("transactionHash", function (hash) {
@@ -349,6 +366,8 @@ app.post("/sendTransaction", function (req, res) {
         data.status = false;
         res.send(data);
       });
+     })
+     
   } catch (err) {
     data.message = err.message;
     data.status = false;
