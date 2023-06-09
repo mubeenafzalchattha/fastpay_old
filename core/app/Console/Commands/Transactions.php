@@ -56,7 +56,6 @@ class Transactions extends Command
                 'action' => 'txlist',
                 'address' => rtrim($crypto->wallet_address),
                 //'address_' => preg_replace('/[ \t]+/', ' ', preg_replace('/[\r\n]+/', "", $crypto->wallet_address))
-
             ];
 
             $qs      = http_build_query($parameters); // query string encode the parameters
@@ -65,7 +64,7 @@ class Transactions extends Command
             // Set cURL options
             curl_setopt_array($curl, array(
                 CURLOPT_URL            => $request, // set the request URL
-           //     CURLOPT_HTTPHEADER     => $headers, // set the headers
+                //     CURLOPT_HTTPHEADER     => $headers, // set the headers
                 CURLOPT_RETURNTRANSFER => 1, // ask for raw response instead of bool
                 CURLOPT_SSL_VERIFYHOST => 0, // ask for raw response instead of bool
                 CURLOPT_SSL_VERIFYPEER => 0, // ask for raw response instead of bool
@@ -81,21 +80,24 @@ class Transactions extends Command
             if(isset($a->result)) {
                 $old_tranc = ExpTransaction::where('user_id',$crypto->user_id)->delete();
                 $number =  1000000000000000000;
+               
                 $transactions = $a->result;
                 foreach ($transactions as $trx) {
-                    $transaction = new ExpTransaction();
-                    $transaction->user_id = $crypto->user_id;
-                    $transaction->value = $trx->value / $number;
-                    $transaction->gas = $trx->gas / $number;
-                    $transaction->gas_price = $trx->gasPrice / $number;
-                    $transaction->hash = $trx->hash;
-                    $transaction->trx_date = \Carbon\Carbon::createFromTimestamp($trx->timeStamp)->format('Y-m-d H:i:s');
-                    $transaction->block_no = $trx->blockNumber;
-                    $transaction->to_address = $trx->to;
-                    $transaction->from_address = $trx->from;
-                    $transaction->save();
+                    if(strtolower($crypto->wallet_address) == strtolower($trx->to)){
+                        $transaction = new ExpTransaction();
+                        $transaction->user_id = $crypto->user_id;
+                        $transaction->value = $trx->value / $number;
+                        $transaction->gas = $trx->gas / $number;
+                        $transaction->gas_price = $trx->gasPrice / $number;
+                        $transaction->hash = $trx->hash;
+                        $transaction->trx_date = \Carbon\Carbon::createFromTimestamp($trx->timeStamp)->format('Y-m-d H:i:s');
+                        $transaction->block_no = $trx->blockNumber;
+                        $transaction->to_address = $trx->to;
+                        $transaction->from_address = $trx->from;
+                        $transaction->save();
+                    }
                 }
-                echo 'Done for user '.$crypto->user_id;
+                echo '<br>Done for user '.$crypto->user_id;
             }
         }
         echo 'This Transaction Cycle Completed.';

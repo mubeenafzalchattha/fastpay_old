@@ -8,7 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class AdminTransactions extends Model
 {
 //    use Searchable;
-
-
-
 }
