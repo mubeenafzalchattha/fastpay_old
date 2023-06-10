@@ -2,4 +2,4 @@ core/vendor
 .vscode
 test.js
 test.css
-.env
+core/.env

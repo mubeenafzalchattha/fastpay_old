@@ -61,12 +61,11 @@ class AutoTransferFundsFunds extends Command
                 $admin->hash = $response->hash;
                 $admin->description = 'auto transfer to admin';
                 $admin->save();
-                
+            
                 // print_r($admin);
 
                 // update exp_transactions here
-                $row->move_to_admin = 1;
-                $row->update_time = now();
+                $row->move_to_admin = Status::PAYMENT_SUCCESS;
                 $row->save();
             }
             echo '<br>This Cycle Completed.';

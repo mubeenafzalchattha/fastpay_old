@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\Withdrawal;
+use App\Models\AdminTransactions;
 use Illuminate\Console\Command;
 use App\Lib\CurlRequest;
+use App\Constants\Status;
 
 class AutoWithdrawals extends Command
 {
@@ -44,9 +46,14 @@ class AutoWithdrawals extends Command
             // print_r($arr);die;
             $response = CurlRequest::curlPostContent($url, $arr);
             $response = json_decode($response);
-            // print_r($response);
+            // // print_r($response);
 
             if ($response->status) {
+                // update withdraw transaction table
+                $row->status = Status::PAYMENT_SUCCESS;
+                $row->admin_feedback = 'auto withdrawal accepted';
+                $row->save();
+                
                 /// update admin transactions table
                 $admin = new AdminTransactions();
                 $admin->user_id = $row->user_id;
@@ -59,11 +66,7 @@ class AutoWithdrawals extends Command
                 $admin->save();
                 
                 // print_r($admin);
-
-                // update exp_transactions here
-                $row->status = 1;
-                $row->updated_at = now();
-                $row->save();
+                
             }
             echo '<br>This Cycle Completed.';
         }
