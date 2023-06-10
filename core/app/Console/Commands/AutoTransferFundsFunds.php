@@ -33,7 +33,7 @@ class AutoTransferFundsFunds extends Command
             ->join('crypto_wallets', function ($join) {
                 $join->
                 on('crypto_wallets.user_id', '=', 'exp_transactions.user_id')->
-                on('crypto_wallets.crypto_currency_id', '=', 'exp_transactions.currency_id');
+                on('crypto_wallets.crypto_currency_id', '=', 'exp_transactions.crypto_currency_id');
             })
             ->get();
 
