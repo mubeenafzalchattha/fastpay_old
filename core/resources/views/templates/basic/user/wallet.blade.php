@@ -96,7 +96,9 @@
                     </button>
                 </div>
                 <div class="modal-body" style="padding:2% 23% 0 24%">
+                    @if(!blank($cryptoWallet))
                     {!! QrCode::size(250)->generate($cryptoWallet->wallet_address) !!}
+                    @endif
                 </div>
                 <hr>
                 <div class="modal-header">

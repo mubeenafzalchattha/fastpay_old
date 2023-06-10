@@ -1,0 +1,19 @@
+<?php
+
+
+namespace App\Components\GeneralHelper;
+
+use App\Models\Wallet;
+use Illuminate\Support\Facades\Auth;
+
+class GeneralHelper {
+
+
+    public static function updateBalance($balance,$user_id,$currency_id=0)
+    {
+        $wallet = Wallet::where('user_id',$user_id)->first();
+        $wallet->balance = $balance;
+        $wallet->save();
+
+    }
+}

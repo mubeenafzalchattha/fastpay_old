@@ -405,6 +405,7 @@ class UserController extends Controller
     public function wallets()
     {
         $wallets = Wallet::where('user_id', auth()->id())->with('crypto')->latest()->get();
+        $crypto = CryptoCurrency::where('user_id', auth()->id())->first();
         $notify[] = 'User wallets';
 
         return response()->json([
@@ -413,6 +414,7 @@ class UserController extends Controller
             'message' => ['success' => $notify],
             'data' => [
                 'wallets'          => $wallets,
+                'crypto'          => $crypto,
                 'crypto_image_path' => getFilePath('crypto'),
             ]
         ]);

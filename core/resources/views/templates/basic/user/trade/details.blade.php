@@ -39,6 +39,9 @@
                         <div class="card-body">
                             @include($activeTemplate . 'user.trade.partials.alerts')
                             @include($activeTemplate . 'user.trade.partials.actions')
+                            <div class="alert alert-warning" role="alert">
+                                <p class="text-md">@lang('If the system identifies any false information or detects fraudulent activity, your account will be suspended.')</p>
+                            </div>
                             @include($activeTemplate . 'user.trade.partials.info')
                             @include($activeTemplate . 'user.trade.partials.instructions')
                         </div>
@@ -55,6 +58,25 @@
             </div>
         </div>
     </section>
+    {{-- APPROVE MODAL --}}
+    <div id="qrModal" class="modal fade" tabindex="-1" role="dialog" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@lang('Wallet Address')</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="la la-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding:2% 23% 0 24%">
+                </div>
+                <hr>
+                <div class="modal-header">
+                    <p>{{'Scan QR Code'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
