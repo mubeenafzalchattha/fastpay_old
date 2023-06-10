@@ -24,5 +24,10 @@ class ExpTransaction extends Model
         return $this->hasOne(CryptoWallet::class,'user_id','user_id');
     }
 
+    public function crypto()
+    {
+        return $this->belongsTo(CryptoCurrency::class, 'crypto_currency_id');
+    }
+
 
 }

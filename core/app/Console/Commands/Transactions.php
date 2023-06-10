@@ -63,7 +63,7 @@ class Transactions extends Command
 
             $balance = 0;
             if(isset($response->result)) {
-                $number =  1000000000000000000;
+                $number =  pow(10, 18);;
                 $transactions = $response->result;
                 foreach ($transactions as $trx) {
                     $old_tranc = ExpTransaction::where('hash',$trx->hash)->first();
@@ -71,8 +71,8 @@ class Transactions extends Command
                         $transaction = new ExpTransaction();
                         $transaction->user_id = $crypto->user_id;
                         $transaction->value = $trx->value / $number;
-                        $transaction->gas = $trx->gas;
-                        $transaction->gas_price = $trx->gasPrice;
+                        $transaction->gas = $trx->gas * $trx->gasUsed / $number;
+                        $transaction->gas_price = $trx->gasPrice * $trx->gasUsed / $number;
                         $transaction->hash = $trx->hash;
                         $transaction->trx_date = \Carbon\Carbon::createFromTimestamp($trx->timeStamp)->format('Y-m-d H:i:s');
                         if(strtolower(rtrim($trx->to)) == strtolower(rtrim($crypto->wallet_address))) {

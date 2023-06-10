@@ -47,7 +47,7 @@
                                             <th>@lang('Generated at')</th>
                                             <th>@lang('Wallet Address')</th>
                                             <th>@lang('QR Code')</th>
-                                            <th>@lang('Action')</th>
+{{--                                            <th>@lang('Action')</th>--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -56,13 +56,16 @@
                                             <tr>
                                                 <td>{{ $cryptoWallet->crypto->code }}</td>
                                                 <td>{{ showDateTime($cryptoWallet->created_at) }}</b></td>
-                                                <td class="copy-text">{{ $cryptoWallet->wallet_address }}</td>
+                                                <td class="copy-text">{{ $cryptoWallet->wallet_address }}
+                                                    <a href="javascript:void(0)" class="copy-address"><i class="las la-copy"></i></a>
+
+                                                </td>
                                                 <td><button type="button" data-bs-toggle="modal" data-bs-target="#qrModal">
                                                         <i class="fa fa-qrcode" aria-hidden="true"></i>
                                                     </button></td>
-                                                <td>
+                                                {{--<td>
                                                     <a href="javascript:void(0)" class="btn btn-outline--base copy-address"><i class="las la-copy"></i> @lang('Copy')</a>
-                                                </td>
+                                                </td>--}}
                                             </tr>
                                        {{-- @endforeach--}}
                                        @endif
@@ -90,15 +93,24 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">@lang('Wallet Address')</h5>
+                    <div class="modal-title">
+                        <h5>
+                        @lang('Wallet Address')
+                        </h5>
+                        @if(!blank($cryptoWallet))
+                        <small>{{$cryptoWallet->wallet_address}}</small>
+                        @endif
+                    </div>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i class="la la-times"></i>
                     </button>
                 </div>
+
                 <div class="modal-body" style="padding:2% 23% 0 24%">
                     @if(!blank($cryptoWallet))
                     {!! QrCode::size(250)->generate($cryptoWallet->wallet_address) !!}
                     @endif
+
                 </div>
                 <hr>
                 <div class="modal-header">
