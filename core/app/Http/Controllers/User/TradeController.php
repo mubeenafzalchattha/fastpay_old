@@ -32,12 +32,11 @@ class TradeController extends Controller
         $ad          = Advertisement::findOrFail($id);
         $maxLimit    = getMaxLimit($ad->user->wallets, $ad);
         $isTradeable = $this->checkIsTradeable($ad, $maxLimit, true);
-
+      
         if ($isTradeable[0] == 'error') {
             $notify[] = $isTradeable;
             return back()->withNotify($notify);
         }
-
         $pageTitle           = 'New Trade Request';
         $basicQuery          = Review::where('advertisement_id', $ad->id);
         $allReview           = clone $basicQuery;
@@ -47,7 +46,11 @@ class TradeController extends Controller
         $negative            = $negativeReviewCount->where('type', 0)->count();
         $reviews             = $allReview->latest()->with(['advertisement.fiatGateway', 'advertisement.fiat', 'user', 'tradeRequest'])->paginate(getPaginate());
 
-        return view($this->activeTemplate . 'user.trade.create', compact('pageTitle', 'ad', 'maxLimit', 'positive', 'negative', 'reviews'));
+        $cryp_curr_id = $ad->user->wallets->first()->crypto_currency_id;
+        $wallet  = Wallet::where('user_id', auth()->id())->where('crypto_currency_id',$cryp_curr_id)->first();
+        $balance = $wallet->balance;
+
+        return view($this->activeTemplate . 'user.trade.create', compact('pageTitle', 'ad', 'maxLimit', 'positive', 'negative', 'reviews','balance'));
     }
 
     public function sendTradeRequest(Request $request, $id)

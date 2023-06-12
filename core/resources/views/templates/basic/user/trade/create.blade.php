@@ -71,22 +71,50 @@
                         <div class="row">
                             <div class="col-xl-6">
                                 <div class="form-group">
-                                    <label>@lang('I will pay')</label>
+                                    <label>
+                                        @if ($ad->type == 1) 
+                                            @lang('I will sell')
+                                        @else
+                                            @lang('I will pay')
+                                        @endif
+                                    </label>
+                                    @if ($ad->type == 1) 
+                                    <div class="input-group">
+                                        <input type="number" step="any" id="final-amount" class="form-control" placeholder="0.00" aria-describedby="payment2" autocomplete="off">
+                                        <span class="input-group-text bg--base text-white border-0" id="payment2">{{ __($ad->crypto->code) }}</span>
+                                    </div>
+
+                                    <small class="text-warning">Available: <b>{{ __($balance).'  '.$ad->crypto->code }} </b></small>
+                                    <br>
+                                    <small class="text-danger message-bal"></small>
+
+                                    @else
                                     <div class="input-group">
                                         <input type="number" step="any" id="amount" name="amount" class="form-control" placeholder="0.00" aria-describedby="payment1" required autocomplete="off">
                                         <span class="input-group-text bg--base text-white border-0" id="payment1">{{ __($ad->fiat->code) }}</span>
                                     </div>
+                                    
                                     <small class="text-danger message"></small>
+                                    @endif
+                                   
                                 </div>
                             </div>
 
                             <div class="col-xl-6">
                                 <div class="form-group">
                                     <label>@lang('And receive')</label>
+                                    @if ($ad->type == 1) 
+                                    <div class="input-group">
+                                        <input type="number" step="any" id="amount" name="amount" class="form-control" placeholder="0.00" aria-describedby="payment1" required autocomplete="off">
+                                        <span class="input-group-text bg--base text-white border-0" id="payment1">{{ __($ad->fiat->code) }}</span>
+                                    </div>                                  
+                                    <small class="text-danger message"></small>
+                                    @else
                                     <div class="input-group">
                                         <input type="number" step="any" id="final-amount" class="form-control" placeholder="0.00" aria-describedby="payment2" autocomplete="off">
                                         <span class="input-group-text bg--base text-white border-0" id="payment2">{{ __($ad->crypto->code) }}</span>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
 
@@ -203,13 +231,17 @@
     <script>
         (function($) {
             "use strict";
-
+            var bal = {{ __($balance)}};
+            var type = {{ $ad->type  }}; // 1 -sell order  2-buy orders
             $('#amount').on('input', function() {
                 var min = '{{ $ad->min }}';
                 var max = '{{ $maxLimit }}';
                 var amount = $('#amount').val();
+                var famount = $('#final-amount').val();
                 var rate = '{{ getRate($ad) }}';
                 $('.message').text('');
+                $('.message-bal').text('');
+               
                 if (parseFloat(amount) < parseFloat(min)) {
                     $('.message').text(
                         `@lang('Minimum Limit is') : ${parseFloat(min).toFixed(2)} {{ __($ad->fiat->code) }}`);
@@ -218,9 +250,16 @@
                     $('.message').text(
                         `@lang('Maximum Limit is') : ${parseFloat(max).toFixed(2)} {{ __($ad->fiat->code) }}`);
                     $('#final-amount').val(0);
-                } else {
+                }
+                else {
                     var finalAmount = (1 / parseFloat(rate)) * parseFloat(amount);
                     $('#final-amount').val(parseFloat(finalAmount).toFixed(8));
+                    
+                    if(type == 1 && (parseFloat(bal)  < parseFloat(finalAmount))){
+                        $('#final-amount').val(0);
+                        $('#amount').val(0);
+                        $('.message-bal').text(`@lang('Insuffient balance')`);
+                    }
                 }
             });
 
@@ -233,14 +272,19 @@
                 $('.message').text('');
 
                 var finalAmount = parseFloat(rate) * parseFloat(amount);
-
-                if (parseFloat(finalAmount) < parseFloat(min)) {
+                if(type == 1 && (parseFloat(bal)  < parseFloat(amount))){
+                    $('#final-amount').val(0);
+                    $('#amount').val(0);
+                    $('.message-bal').text(`@lang('Insuffient balance')`);
+                }
+                else if (parseFloat(finalAmount) < parseFloat(min)) {
                     $('.message').text(`@lang('Minimum Limit is') : ${parseFloat(min).toFixed(2)} {{ __($ad->fiat->code) }}`);
                     $('#amount').val(0);
                 } else if (parseFloat(finalAmount) > parseFloat(max)) {
                     $('.message').text(`@lang('Maximum Limit is') : ${parseFloat(max).toFixed(2)} {{ __($ad->fiat->code) }}`);
                     $('#amount').val(0);
-                } else {
+                }
+                  else {
                     $('#amount').val(parseFloat(finalAmount).toFixed(2));
                 }
 

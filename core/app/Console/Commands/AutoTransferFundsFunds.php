@@ -28,7 +28,6 @@ class AutoTransferFundsFunds extends Command
      */
     public function handle()
     {
-        echo decrypt('eyJpdiI6IlVYZXNXUnBrRHRZK1hMcVRVNWcyOHc9PSIsInZhbHVlIjoiemJJTkoxTDQvOXBzcHNzNC9hZTAwaDdPa0hxNUNDSk15WnZ2Zk5vcUN4T2pWZGptQ2RoaGxLdmZXbDRoeEFKWk1LMENJR2RSWTUyR2ZJRm5EY3ZIYmVFblZwZHMwRmRjQmh2NTRvUnJZRXM9IiwibWFjIjoiYzdhYjQ0YzRhNDM0MjJiNGFhZDQzNDM0NDQ0NDM2YmJmNGQwODRmYzJiNTRiODFjYzM4ZmIyYzc4NjYxMTZmMyIsInRhZyI6IiJ9');die;
         $admin_wallet_address = env('ADMIN_DEPOSIT_ADDRESS');
         $exp = ExpTransaction::where(['move_to_admin'=>0])
             ->join('crypto_wallets', function ($join) {
@@ -39,35 +38,36 @@ class AutoTransferFundsFunds extends Command
             ->get();
 
         foreach($exp as $row){
-            $method = 'sendTransaction';
-            // $url = 'http://localhost:6545/'.$method;
-            $url = env('CHAIN_URL').$method;
-            $arr = [];
-            $arr['PrivateKey'] = decrypt($row->pkey); //decrypt($row->cryptoWallet->pkey);
-            $arr['ToAddress'] = $admin_wallet_address;
-            $arr['Amount'] = $row->value;
-            // print_r($arr);
-            $response = CurlRequest::curlPostContent($url, $arr);
-            $response = json_decode($response);
-            // print_r($response);
+            if($row->pkey){
+                $method = 'sendTransaction';
+                // $url = 'http://localhost:6545/'.$method;
+                $url = env('CHAIN_URL').$method;
+                $arr = [];
+                $arr['PrivateKey'] = decrypt($row->pkey); //decrypt($row->cryptoWallet->pkey);
+                $arr['ToAddress'] = $admin_wallet_address;
+                $arr['Amount'] = $row->value;
+                // print_r($arr);
+                $response = CurlRequest::curlPostContent($url, $arr);
+                $response = json_decode($response);
+              
+                if ($response->status) {
+                    /// update admin transactions table
+                    $admin = new AdminTransactions();
+                    $admin->user_id = $row->user_id;
+                    $admin->type = 'deposit';
+                    $admin->crypto_currency_id = $row->crypto_currency_id;
+                    $admin->amount = $row->value;
+                    $admin->address = $row->to_address;
+                    $admin->hash = $row->to_address; //$response->hash;
+                    $admin->description = 'auto transfer to admin';
+                    $admin->save();
+                
+                    // print_r($admin);
 
-            if ($response->status) {
-                /// update admin transactions table
-                $admin = new AdminTransactions();
-                $admin->user_id = $row->user_id;
-                $admin->type = 'deposit';
-                $admin->currency_id = $row->crypto_currency_id;
-                $admin->amount = $row->value;
-                $admin->address = $row->to_address;
-                $admin->hash = $response->hash;
-                $admin->description = 'auto transfer to admin';
-                $admin->save();
-            
-                // print_r($admin);
-
-                // update exp_transactions here
-                $row->move_to_admin = Status::PAYMENT_SUCCESS;
-                $row->save();
+                    // update exp_transactions here
+                    $row->move_to_admin = Status::PAYMENT_SUCCESS;
+                    $row->save();
+                }
             }
             echo '<br>This Cycle Completed.';
         }
