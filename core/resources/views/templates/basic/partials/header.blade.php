@@ -44,7 +44,16 @@
                             </li>
 
                             <li><a href="{{ route('user.wallets') }}">@lang('Wallets')</a></li>
-                            <li><a href="{{ route('user.transaction.index') }}">@lang('Transactions')</a></li>
+{{--                            <li><a href="{{ route('user.transaction.index') }}">@lang('Transactions')</a></li>--}}
+                            <li class="menu_has_children"><a href="javascript:void(0)">@lang('Transactions')</a>
+                                <ul class="sub-menu">
+                                    <li><a href="{{ route('user.transaction.index') }}">@lang('P2P Transactions')</a></li>
+                                    <li><a href="{{ route('user.deposit.history') }}">@lang('P2P Deposits')</a></li>
+                                    <li><a href="{{ route('user.deposit.transaction.history') }}">@lang('Crypto Transactions')</a></li>
+                                    <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>
+                                </ul>
+                            </li>
+
                         @endauth
 
                         @foreach ($pages as $k => $data)
@@ -57,9 +66,9 @@
                             <li class="menu_has_children"><a href="javascript:void(0)">@lang('More')</a>
                                 <ul class="sub-menu">
                                     <li><a href="{{ route('ticket.index') }}">@lang('Support')</a></li>
-                                    <li><a href="{{ route('user.deposit.history') }}">@lang('Deposits')</a></li>
-                                    <li><a href="{{ route('user.deposit.transaction.history') }}">@lang('Deposits Transactions')</a></li>
-                                    <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>
+{{--                                    <li><a href="{{ route('user.deposit.history') }}">@lang('Deposits')</a></li>--}}
+{{--                                    <li><a href="{{ route('user.deposit.transaction.history') }}">@lang('Deposits Transactions')</a></li>--}}
+{{--                                    <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>--}}
                                     <li><a href="{{ route('user.referral.commissions.trade') }}">@lang('Referral')</a></li>
                                     <li><a href="{{ route('user.change.password') }}">@lang('Password')</a></li>
                                     <li><a href="{{ route('user.profile.setting') }}">@lang('Profile Setting')</a></li>

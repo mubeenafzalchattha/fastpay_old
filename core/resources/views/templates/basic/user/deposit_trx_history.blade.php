@@ -33,6 +33,7 @@
                                 <table class="table custom--table">
                                     <thead>
                                         <tr>
+                                            <th>@lang('Code')</th>
                                             <th>@lang('TXN Hash.')</th>
                                             <th>@lang('Amount')</th>
                                             <th>@lang('Gas')</th>
@@ -46,7 +47,7 @@
                                     <tbody>
                                         @foreach ($deposits as $deposit)
                                             <tr>
-                                                {{--<td><span class="text--base">{{ __($deposit->crypto->code) }}</span></td>--}}
+                                                <td><span class="text--base">{{ __($deposit->crypto->code) }}</span></td>
                                                 <td>{{ $deposit->hash }}</td>
                                                 <td>{{ showAmount($deposit->value,5) }}</td>
                                                 <td>{{ showAmount($deposit->gas) }}</td>
