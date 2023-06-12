@@ -10,7 +10,7 @@
                             <li><a href="{{ route('user.wallets') }}" class="btn btn-sm btn-outline--base @if (!request()->id) active @endif">@lang('All')</a></li>
                             @foreach ($wallets as $wallet)
                                 <li>
-                                    <a href="{{ route('user.wallets.single', [$wallet->crypto->id, $wallet->crypto->code]) }}" class="btn btn-sm btn-outline--base @if (request()->id == $wallet->crypto->id) active @endif"><span>{{ $wallet->crypto->code }}</span> {{--({{ $cryptoWallets->where('crypto_id', $wallet->crypto_id)->count() }})--}} {{ showAmount($wallet->balance, 8) }}</a>
+                                    <a href="{{ route('user.wallets.single', [$wallet->crypto->id, $wallet->crypto->code]) }}" class="btn btn-sm btn-outline--base @if (request()->id == $wallet->crypto->id) active @endif" id="balance"><span>{{ $wallet->crypto->code }}</span> {{--({{ $cryptoWallets->where('crypto_id', $wallet->crypto_id)->count() }})--}} {{ showAmount($wallet->balance, 8) }} </a>
                                 </li>
                             @endforeach
                         </ul>
@@ -141,5 +141,24 @@
                 document.getElementById("walletAddress").remove();
             })
         })(jQuery);
+       // var i =1;
+        setInterval(function(){
+
+            $.ajax({
+                url: '{{route('user.getbalance')}}',
+                method: 'GET',
+                success: function(response) {
+                    //console.log(response);
+                    html = "<span>{{ $wallet->crypto->code }}</span> " + response;
+                    $('#balance').html(html);
+                    //i++;
+                },
+                error: function(xhr, status, error) {
+                    console.log('An error occurred while loading the content.');
+                }
+            });
+        }, 10000);
+
     </script>
+
 @endpush

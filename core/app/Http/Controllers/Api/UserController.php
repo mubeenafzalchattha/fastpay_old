@@ -18,6 +18,7 @@ use App\Models\CryptoWallet;
 use App\Models\Referral;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Validator;
@@ -366,7 +367,8 @@ class UserController extends Controller
     public function transactions(Request $request)
     {
         $remarks      = Transaction::distinct('remark')->whereNotNull('remark')->get('remark');
-        $transactions = Transaction::where('user_id', auth()->id())->where('crypto_currency_id', '!=', null);
+       // $transactions = Transaction::where('user_id', auth()->id())->where('crypto_currency_id', '!=', null);
+        $transactions = Transaction::where('user_id', auth()->id())->where('crypto_currency_id', '!=', null)->where('remark','!=','withdraw');
 
         if ($request->search) {
             $transactions = $transactions->where('trx', $request->search);

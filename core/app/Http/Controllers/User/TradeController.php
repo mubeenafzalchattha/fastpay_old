@@ -32,11 +32,12 @@ class TradeController extends Controller
         $ad          = Advertisement::findOrFail($id);
         $maxLimit    = getMaxLimit($ad->user->wallets, $ad);
         $isTradeable = $this->checkIsTradeable($ad, $maxLimit, true);
-      
+
         if ($isTradeable[0] == 'error') {
             $notify[] = $isTradeable;
             return back()->withNotify($notify);
         }
+
         $pageTitle           = 'New Trade Request';
         $basicQuery          = Review::where('advertisement_id', $ad->id);
         $allReview           = clone $basicQuery;
@@ -187,12 +188,13 @@ class TradeController extends Controller
             $canceledBy = 'buyer';
         }
 
+
         $trade->status  = Status::TRADE_CANCELED;
         $trade->details = 'Canceled by ' . $canceledBy;
-        // $trade->save();
+         $trade->save();
 
         $wallet->balance += ($trade->crypto_amount + $trade->trade_charge);
-        // $wallet->save();
+         $wallet->save();
 
         $transaction                        = new Transaction();
         $transaction->user_id               = $trade->seller->id;
@@ -204,14 +206,14 @@ class TradeController extends Controller
         $transaction->details               = 'Refunded for cancellation of a sell trade';
         $transaction->trx                   = getTrx();
         $transaction->remark                = 'trade_canceled';
-        // $transaction->save();
+         $transaction->save();
 
         $chat = new Chat();
         $chat->trade_id = $trade->id;
         $chat->user_id          = auth()->id();
         $chat->message          = auth()->user()->username . ' canceled this trade';
         $chat->file             = null;
-        // $chat->save();
+         $chat->save();
 
         $emailShortCodes = [
             'name'            => auth()->user()->username,
@@ -231,13 +233,19 @@ class TradeController extends Controller
         return back()->withNotify($notify);
     }
 
-    public function paid($id)
+    public function paid(Request $request,$id)
     {
+
+        if(empty($request->txn) || !isset($request->txn)){
+            $notify[] = ['error', 'Transaction Number is required to perform this action.'];
+            return back()->withNotify($notify);
+        }
         $trade = Trade::where('status', 0)->where('buyer_id', auth()->id())->findOrFail($id);
 
         $trade->status  = Status::TRADE_BUYER_SENT;
         $trade->details = 'Paid by buyer';
         $trade->paid_at = Carbon::now();
+        $trade->unique_txn_no = isset($request->txn)?$request->txn:'';
         $trade->save();
 
         $chat           = new Chat();

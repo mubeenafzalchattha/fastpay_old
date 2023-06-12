@@ -4,6 +4,20 @@
         $advertisementContent = getContent('advertisement.content', true);
     @endphp
 
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
     <section class="pt-60 pb-60">
         <div class="container">
             <div class="row justify-content-center">

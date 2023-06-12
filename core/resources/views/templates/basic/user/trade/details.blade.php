@@ -59,20 +59,27 @@
         </div>
     </section>
     {{-- APPROVE MODAL --}}
-    <div id="qrModal" class="modal fade" tabindex="-1" role="dialog" >
+    <div id="paidModal" class="modal fade" tabindex="-1" role="dialog" >
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">@lang('Wallet Address')</h5>
+                    <h5 class="modal-title">@lang('Are you sure that you have paid the amount?')</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i class="la la-times"></i>
                     </button>
                 </div>
-                <div class="modal-body" style="padding:2% 23% 0 24%">
+                <div class="modal-body">
+{{--
+                    <span class="input-group-text bg--base text-white border-0" id="payment1">{{'Unique Transaction Number' }}</span>
+--}}
+                    <input type="text" id="unique_tranc_id" name="unique_tranc_id" class="form-control" placeholder="Unique Transaction Number" >
+                    <p id="required_val"></p>
                 </div>
                 <hr>
                 <div class="modal-header">
-                    <p>{{'Scan QR Code'}}</p>
+                    <button type="button" class="btn btn-sm btn--danger w-20" id="cancelPaid" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn--success w-20" id="confirmPaid">Submit</button>
+
                 </div>
             </div>
         </div>
@@ -122,5 +129,32 @@
                 };
             @endif
         })(jQuery);
+
+        $('#confirmPaid').on('click', function() {
+            var txn_no = $('#unique_tranc_id').val();
+            if(txn_no != '') {
+
+                var id = {{$trade->id}};
+                var url = "{{ route('user.trade.request.paid', ":txid") }}";
+                url = url.replace(':txid', id);
+                url = url+'?txn='+txn_no;
+                $.ajax({
+                    url: url,
+                    data:{"_token": "{{csrf_token()}}",txn:txn_no},
+                    method: 'POST',
+                    success: function (response) {
+                        $('#paidModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('An error occurred while loading the content.');
+                        html = '<span style="color:red;padding:10px">An error occurred while loading the content.</span> ';
+                        $('#required_val').html(html);
+                    }
+                });
+            } else {
+                html = '<span style="color:red;padding:10px">Unique Transaction Number required as a proof.</span> ';
+                $('#required_val').html(html);
+            }
+        });
     </script>
 @endpush

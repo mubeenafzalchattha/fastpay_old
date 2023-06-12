@@ -97,7 +97,6 @@ class UserController extends Controller
         return view($this->activeTemplate . 'user.deposit_trx_history', compact('pageTitle', 'deposits'));
     }
 
-
     public function referralCommissions()
     {
         $pageTitle = 'Referral Commissions';
@@ -165,12 +164,11 @@ class UserController extends Controller
         return back()->withNotify($notify);
     }
 
-
     public function transactionIndex(Request $request)
     {
         $pageTitle    = 'Transactions';
-        $remarks      = Transaction::distinct('remark')->whereNotNull('remark')->get('remark');
-        $transactions = Transaction::where('user_id', Auth::id())->where('crypto_currency_id', '!=', null);
+        $remarks      = Transaction::distinct('remark')->whereNotNull('remark')->where('remark','!=','withdraw')->get('remark');
+        $transactions = Transaction::where('user_id', Auth::id())->where('crypto_currency_id', '!=', null)->where('remark','!=','withdraw');
 
         if ($request->search) {
             $transactions = $transactions->where('trx', $request->search);
@@ -193,7 +191,6 @@ class UserController extends Controller
 
         return view($this->activeTemplate . 'user.transaction', compact('pageTitle', 'transactions', 'cryptos', 'remarks'));
     }
-
 
     public function kycForm()
     {

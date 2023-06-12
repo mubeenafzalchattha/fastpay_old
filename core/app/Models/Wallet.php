@@ -21,6 +21,6 @@ class Wallet extends Model
 
     public function cryptoWallet()
     {
-        return $this->belongsTo(CryptoWallet::class, 'crypto_currency_id');
+        return $this->belongsTo(CryptoWallet::class, 'user_id','user_id');
     }
 }

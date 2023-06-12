@@ -10,7 +10,7 @@
 
         @if ($authBuyer)
             <div class="col-md-6">
-                <button type="button" class="btn btn-lg btn--success w-100 confirmationBtn" {{--data-action="{{ route('user.trade.request.paid', $trade->id) }}" data-question="@lang('Are you sure that you have paid the amount?')"--}} >
+                <button type="button" class="btn btn-lg btn--success w-100 {{--confirmationBtn--}}" data-bs-toggle="modal" data-bs-target="#paidModal" {{--data-action="{{ route('user.trade.request.paid', $trade->id) }}" data-question="@lang('Are you sure that you have paid the amount?')"--}} >
                     <i class="las la-check-circle"></i> @lang('I Have Paid')
                 </button>
             </div>

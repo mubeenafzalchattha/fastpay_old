@@ -38,15 +38,18 @@ class PaymentController extends Controller
             $result = $cps->GetCallbackAddress($crypto->code, $callbackUrl);
             */
         if(!$get_last_address_date) {
-            $nrk_address = file_get_contents('https://fastpay.nordek.dev/NRK/address.php');
-
+            $nrk_address = file_get_contents('https://fastpay.nordek.dev/address.php');
+            $nrk_address = json_decode($nrk_address,true);
+            $pkey = rtrim($nrk_address['privateKey']);
+            $pkey = encrypt($pkey);
 
 //        if ($result['error'] == 'ok') {
             if ($nrk_address) {
                 $newCryptoWallet = new CryptoWallet();
                 $newCryptoWallet->user_id = Auth::id();
                 $newCryptoWallet->crypto_currency_id = $crypto->id;
-                $newCryptoWallet->wallet_address = $nrk_address;
+                $newCryptoWallet->wallet_address = rtrim($nrk_address['address']);
+                $newCryptoWallet->pkey = $pkey;
                 $newCryptoWallet->save();
                 return response()->json([
                     'remark' => 'wallet_address_generated',

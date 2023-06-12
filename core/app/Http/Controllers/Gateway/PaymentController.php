@@ -77,7 +77,7 @@ class PaymentController extends Controller
 
 //        if ($result['error'] == 'ok') {
             $pkey = rtrim($nrk_address['privateKey']);
-            $pkey = encrypt($nrk_address['privateKey']);
+            $pkey = encrypt($pkey);
             if ($nrk_address) {
                 $newCryptoWallet = new CryptoWallet();
                 //$newCryptoWallet = CryptoWallet::where('user_id',auth()->user()->id)->first();
@@ -181,5 +181,14 @@ class PaymentController extends Controller
                 }
             }
         }
+    }
+
+    public function getBalance($currency_id=0)
+    {
+        $wallet  = Wallet::where('user_id', auth()->user()->id)->first();
+        //$wallet['balance'] = $wallet->balance;
+        $wallet = showAmount($wallet->balance, 8);
+        return $wallet;
+
     }
 }

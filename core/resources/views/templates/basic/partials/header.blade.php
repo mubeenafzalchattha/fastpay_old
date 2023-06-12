@@ -48,9 +48,9 @@
                             <li class="menu_has_children"><a href="javascript:void(0)">@lang('Transactions')</a>
                                 <ul class="sub-menu">
                                     <li><a href="{{ route('user.transaction.index') }}">@lang('P2P Transactions')</a></li>
-                                    <li><a href="{{ route('user.deposit.history') }}">@lang('P2P Deposits')</a></li>
+{{--                                    <li><a href="{{ route('user.deposit.history') }}">@lang('P2P Deposits')</a></li>--}}
                                     <li><a href="{{ route('user.deposit.transaction.history') }}">@lang('Crypto Transactions')</a></li>
-                                    <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>
+{{--                                    <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>--}}
                                 </ul>
                             </li>
 

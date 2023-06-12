@@ -87,6 +87,7 @@ class AdvertisementController extends Controller
 
         $notify[] = ['success', $message];
         return back()->withNotify($notify);
+        //return redirect('user.advertisement.index')->withNotify($notify);
     }
 
     public function updateStatus($id)
@@ -138,14 +139,15 @@ class AdvertisementController extends Controller
         if (!$crypto) {
             return ['error', 'Crypto currency not found or disabled'];
         }
-        $balance = $balance->where('crypto_currency_id', $request->crypto_id)->where('user_id',auth()->user()->id)->first();
-        if ($balance->balance <= $request->min) {
-            return ['error', 'Insufficient Balance to make this request'];
+        if($request->type == 2) {
+            $balance = $balance->where('crypto_currency_id', $request->crypto_id)->where('user_id', auth()->user()->id)->first();
+            if ($balance->balance <= $request->min) {
+                return ['error', 'Insufficient Balance to make this request'];
+            }
+            if ($balance->balance <= $request->max) {
+                return ['error', 'Maximum Limit is more than the balance.'];
+            }
         }
-        if ($balance->balance <= $request->max) {
-            return ['error', 'Maximum Limit is more than the balance.'];
-        }
-
         $fiatGateway = $fiatGateway->where('id', $request->fiat_gateway_id)->first();
 
         if (!$fiatGateway) {

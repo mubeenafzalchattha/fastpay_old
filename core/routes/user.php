@@ -137,6 +137,7 @@ Route::middleware('auth')->name('user.')->group(function () {
         // Wallets
         Route::middleware(['registration.complete', 'kyc'])->controller('Gateway\PaymentController')->group(function () {
             Route::get('/wallets', 'Gateway\PaymentController@wallets')->name('wallets');
+            Route::get('/get/balance', 'Gateway\PaymentController@getBalance')->name('getbalance');
             Route::get('/single-wallet/{id}/{code}', 'Gateway\PaymentController@singleWallet')->name('wallets.single');
             Route::get('/wallets/generate/{crypto}', 'Gateway\PaymentController@walletGenerate')->name('wallets.generate');
         });
