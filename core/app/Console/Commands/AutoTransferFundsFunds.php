@@ -5,6 +5,7 @@ use App\Models\AdminTransactions;
 use App\Models\ExpTransaction;
 use Illuminate\Console\Command;
 use App\Lib\CurlRequest;
+use App\Constants\Status;
 
 class AutoTransferFundsFunds extends Command
 {
