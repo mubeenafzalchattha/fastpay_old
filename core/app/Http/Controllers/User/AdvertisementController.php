@@ -33,7 +33,13 @@ class AdvertisementController extends Controller
         $paymentWindows = PaymentWindow::orderBy('minute')->get();
         $fiatGateways   = FiatGateway::getGateways();
 
-        return view($this->activeTemplate . 'user.advertisement.create', compact('pageTitle', 'cryptos', 'fiatGateways', 'paymentWindows', 'isPermitted'));
+        $cryp_curr_id = $cryptos[0]->id;
+        $wallet  = Wallet::where('user_id', auth()->id())->where('crypto_currency_id',$cryp_curr_id)->first();
+        $balance = 0;
+        if(isset($wallet)) {
+            $balance = isset($wallet->balance)?$wallet->balance:0;
+        }
+        return view($this->activeTemplate . 'user.advertisement.create', compact('pageTitle', 'cryptos', 'fiatGateways', 'paymentWindows', 'isPermitted','balance'));
     }
 
     public function edit($id)

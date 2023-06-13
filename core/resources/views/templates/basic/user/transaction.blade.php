@@ -13,8 +13,8 @@
                             <label class="float-start">@lang('Type')</label>
                             <select class="select" name="type">
                                 <option value="">@lang('All')</option>
-                                <option value="+" @selected(request()->type == '+')>@lang('Plus')</option>
-                                <option value="-" @selected(request()->type == '-')>@lang('Minus')</option>
+                                <option value="+" @selected(request()->type == '+')>@lang('Buy')</option>
+                                <option value="-" @selected(request()->type == '-')>@lang('Sell')</option>
                             </select>
                         </div>
                         <div class="flex-fill">
@@ -58,6 +58,7 @@
                                             <th>@lang('Charge')</th>
                                             <th>@lang('Post balance')</th>
                                             <th>@lang('Details')</th>
+                                            <th>@lang('Date')</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -73,6 +74,7 @@
                                                 <td>{{ showAmount($transaction->charge, 8) }}</td>
                                                 <td>{{ showAmount($transaction->post_balance, 8) }}</td>
                                                 <td>{{ __($transaction->details) }}</td>
+                                                <td>{{ ($transaction->created_at) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

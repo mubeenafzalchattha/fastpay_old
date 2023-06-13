@@ -80,7 +80,7 @@
                 <div class="col-xl-9 col-lg-8">
 
                     <div class="row gy-4">
-                        <div class="col-xl-12 col-lg-12 col-md-12">
+                        {{--<div class="col-xl-12 col-lg-12 col-md-12">
                             <label>@lang('Referral Link')</label>
                             <div class="input-group">
                                 <input type="text" name="key" value="{{ route('user.register', [auth()->user()->username]) }}" class="form-control bg-white" id="referralURL" readonly>
@@ -89,7 +89,7 @@
                                     <i class="lar la-copy"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div>--}}
 
                         @foreach ($wallets as $wallet)
                             <div class="col-xl-4 col-md-6 d-widget-item">
@@ -100,7 +100,7 @@
                                         </div>
                                         <div class="d-widget__content">
                                             <p class="d-widget__caption">{{ __($wallet->cryptoCode) }} </p>
-                                            <h2 class="d-widget__amount">{{ showAmount($wallet->balance, 8) }}</h2>
+                                            <h2 class="d-widget__amount" id="balance">{{ showAmount($wallet->balance, 8) }}</h2>
                                             <h6 class="d-widget__usd text--base">
                                                 @lang('In USD') <i class="las la-arrow-right"></i> {{ showAmount($wallet->balanceInUsd) }}
                                             </h6>
@@ -122,7 +122,7 @@
 
 @push('script')
     <script>
-        (function($) {
+   /*     (function($) {
             "use strict";
 
             $('.copytext').on('click', function() {
@@ -135,7 +135,26 @@
                     position: "topRight"
                 });
             });
-        })(jQuery);
+        })(jQuery);*/
+
+        setInterval(function(){
+
+            $.ajax({
+                url: '{{route('user.getbalance')}}',
+                method: 'GET',
+                success: function(response) {
+                    //console.log(response);
+                    html = response;
+
+                    $('#balance').html(html);
+
+                },
+                error: function(xhr, status, error) {
+                    console.log('An error occurred while loading the content.');
+                }
+            });
+        }, 10000);
+
     </script>
 @endpush
 

@@ -8,13 +8,13 @@
                         <div class="flex-fill">
                             <select class="select" name="crypto">
                                 <option value="">@lang('All')</option>
-                                {{--@foreach ($cryptos as $crypto)
+                                @foreach ($cryptos as $crypto)
                                     <option value="{{ $crypto->id }}" @selected(request()->crypto == $crypto->id)>{{ __($crypto->code) }}</option>
-                                @endforeach--}}
+                                @endforeach
                             </select>
                         </div>
                         <div class="flex-fill">
-                            <input type="text" name="search" value="{{ request()->search }}" class="form-control" placeholder="@lang('TRX No.')">
+                            <input type="text" name="search" value="{{ request()->search }}" class="form-control" placeholder="@lang('TXN Hash.')">
                         </div>
                         <div class="flex-fill">
                             <button type="submit" class="btn--base w-100"><i class="la la-search"></i> @lang('Search')</button>
@@ -47,13 +47,13 @@
                                     <tbody>
                                         @foreach ($deposits as $deposit)
                                             <tr>
-                                                <td><span class="text--base">{{ __($deposit->crypto->code) }}</span></td>
+                                                <td><span class="text--base">{{isset($cryptos)?$cryptos[0]->code:'NRK' }}</span></td>
                                                 <td>{{ $deposit->hash }}</td>
                                                 <td>{{ showAmount($deposit->value,5) }}</td>
                                                 <td>{{ showAmount($deposit->gas) }}</td>
                                                 <td>{{  showAmount($deposit->gas_price) }}</td>
                                                {{-- <td>{{ $deposit->block }}</td>--}}
-                                                <td>{{ $deposit->txn_date }}</td>
+                                                <td>{{ $deposit->trx_date }}</td>
                                                 {{--<td>{{ $deposit->to_address }}</td>
                                                 <td>{{ $deposit->from_address }}</td>--}}
 

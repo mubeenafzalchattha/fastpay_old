@@ -43,7 +43,7 @@
                                                 <i class="la la-info-circle " title="{{ __(@$advertisementContent->data_values->i_want_to) }}"></i>
                                             </label>
 
-                                            <select class="select" name="type" required>
+                                            <select class="select" name="type" required id="type">
                                                 <option value="1">@lang('Buy')</option>
                                                 <option value="2">@lang('Sell')</option>
                                             </select>
@@ -139,17 +139,20 @@
                                         <div class="form-group">
                                             <label>@lang('Minimum Limit') <i class="la la-info-circle " title="{{ __(@$advertisementContent->data_values->minimum_limit) }}"></i></label>
                                             <div class="input-group">
-                                                <input type="number" step="any" name="min" value="{{ old('min') }}" placeholder="@lang('Minimum amount')" class="form-control" required>
+                                                <input type="number" step="any" name="min" id="min" value="{{ old('min') }}" placeholder="@lang('Minimum amount')" class="form-control" required>
                                                 <span class="input-group-text currency-text border-0"></span>
                                             </div>
                                         </div>
+                                        <small class="text-warning">Available: <b>{{ __($balance).'  '.@$cryptos[0]->code }} </b></small>
+                                        <br>
+                                        <small class="text-danger message-bal"></small>
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>@lang('Maximum Limit') <i class="la la-info-circle " title="{{ __(@$advertisementContent->data_values->maximum_limit) }}"></i></label>
                                             <div class="input-group">
-                                                <input type="number" step="any" name="max" value="{{ old('max') }}" placeholder="@lang('Maximum amount')" class="form-control" required>
+                                                <input type="number" step="any" name="max" id="max" value="{{ old('max') }}" placeholder="@lang('Maximum amount')" class="form-control" required>
                                                 <span class="input-group-text currency-text border-0"></span>
                                             </div>
                                         </div>
@@ -204,7 +207,8 @@
     <script>
         (function($) {
             "use strict";
-
+            var bal = {{ __($balance)}};
+            $('.message-bal').text('');
             $('[name=type]').on('change', function() {
                 if (this.value == 1) {
                     $('.tradeChargeText').empty();
@@ -352,6 +356,30 @@
                     }
                 }
             }
+
+            $('#type').on('change', function() {
+                $('#min').val(0);
+                $('#max').val(0);
+            })
+
+            $('#min').on('input', function() {
+                var min = $('#min').val();
+                var type = $('#type').val();
+                $('.message-bal').text('');
+                if (type == 2 && parseFloat(min) > parseFloat(bal)) {
+                    $('#min').val(0);
+                    $('.message-bal').text(`@lang('Insuffient balance')`);
+                }
+            });
+            $('#max').on('input', function() {
+                var max = $('#max').val();
+                var type = $('#type').val();
+                $('.message-bal').text('');
+                if (type == 2 && parseFloat(max) > parseFloat(bal)) {
+                    $('#max').val(0);
+                    $('.message-bal').text(`@lang('Insuffient balance')`);
+                }
+            });
         })(jQuery);
     </script>
 @endpush
