@@ -11,8 +11,9 @@
                                 <strong> <i class="la la-info-circle"></i> @lang('You need to complete your profile to get access to your dashboard')</strong>
                             </div>
 
-                            <form method="POST" action="{{ route('user.data.submit') }}">
+                            <form method="POST" action="{{ route('user.data.submit') }}" enctype="multipart/form-data">
                                 @csrf
+
                                 <div class="row">
                                     <div class="form-group col-sm-6">
                                         <label class="form-label">@lang('First Name')</label>
@@ -39,6 +40,20 @@
                                     <div class="form-group col-sm-6">
                                         <label class="form-label">@lang('City')</label>
                                         <input type="text" class="form-control form--control" name="city" value="{{ old('city') }}">
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label class="form-label">@lang('Passport/ID Number')</label>
+                                        <input type="text" class="form-control form--control" name="identity_no" value="{{ old('identity_no') }}" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label class="form-label">@lang('Passport/ID Front Picture')</label>
+                                        <input type='file' class="profilePicUpload" id="id_front" name="id_front" accept=".jpg, .jpeg, .png" required />
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label class="form-label">@lang('Passport/ID Back Picture')</label>
+                                        <input type='file' class="profilePicUpload" id="id_back" name="id_back" accept=".jpg, .jpeg, .png" required />
                                     </div>
                                 </div>
                                 <div class="form-group">

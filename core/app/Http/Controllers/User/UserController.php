@@ -92,9 +92,9 @@ class UserController extends Controller
         }*/
 
         $deposits = $deposits->orderBy('id', 'desc')->paginate(getPaginate());
-        //$cryptos = CryptoCurrency::orderBy('code')->get();
+        $cryptos = CryptoCurrency::orderBy('code')->get();
 
-        return view($this->activeTemplate . 'user.deposit_trx_history', compact('pageTitle', 'deposits'));
+        return view($this->activeTemplate . 'user.deposit_trx_history', compact('pageTitle', 'deposits','cryptos'));
     }
 
     public function referralCommissions()
@@ -272,6 +272,18 @@ class UserController extends Controller
             'zip'       => $request->zip,
             'city'      => $request->city,
         ];
+
+        $user->identity_no  = $request->identity_no;
+        if ($request->hasFile('id_back')) {
+            $id_back = fileUploader($request->id_back, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_back);
+            $user->id_back = $id_back;
+        }
+
+        if ($request->hasFile('id_front')) {
+            $id_front = fileUploader($request->id_front, getFilePath('userProfile'), getFileSize('userProfile'), @$user->id_front);
+            $user->id_front = $id_front;
+        }
+
         $user->profile_complete  = 1;
         $user->save();
 

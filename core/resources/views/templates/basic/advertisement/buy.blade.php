@@ -24,7 +24,7 @@
 
                             <td><b>{{ showAmount($ad->rate_value) }} {{ __($ad->fiat_code) }}/ {{ __($ad->crypto_code) }}</b></td>
 
-                            <td>{{ showAmount($ad->min) }} - {{ showAmount($ad->max_limit) }} {{ __($ad->fiat_code) }}</td>
+                            <td>{{ showAmount($ad->min) }} - {{ showAmount($ad->max) }} {{ __($ad->fiat_code) }}</td>
 
                             <td>{{ avgTradeSpeed($ad) }}</td>
 

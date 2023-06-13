@@ -69,7 +69,7 @@
 {{--                                    <li><a href="{{ route('user.deposit.history') }}">@lang('Deposits')</a></li>--}}
 {{--                                    <li><a href="{{ route('user.deposit.transaction.history') }}">@lang('Deposits Transactions')</a></li>--}}
 {{--                                    <li><a href="{{ route('user.withdraw.history') }}">@lang('Withdrawals')</a></li>--}}
-                                    <li><a href="{{ route('user.referral.commissions.trade') }}">@lang('Referral')</a></li>
+{{--                                    <li><a href="{{ route('user.referral.commissions.trade') }}">@lang('Referral')</a></li>--}}
                                     <li><a href="{{ route('user.change.password') }}">@lang('Password')</a></li>
                                     <li><a href="{{ route('user.profile.setting') }}">@lang('Profile Setting')</a></li>
                                     <li><a href="{{ route('user.twofactor') }}">@lang('2FA Security')</a></li>
