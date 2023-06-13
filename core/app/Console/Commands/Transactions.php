@@ -63,8 +63,8 @@ class Transactions extends Command
 
             $balance = 0;
             if(isset($response->result)) {
-                $number =  pow(10, 18);;
-                $ten =  pow(10, 10);;
+                $number =  pow(10, 18);
+                $ten =  pow(10, 10);
                 $transactions = $response->result;
                 foreach ($transactions as $trx) {
                     $old_tranc = ExpTransaction::where('hash',$trx->hash)->first();
@@ -83,16 +83,16 @@ class Transactions extends Command
                             $balance = $balance + $transaction->value;
                             echo '<br> Depo';
                             echo $balance;
+                            $transaction->block_no = $trx->blockNumber;
+                            $transaction->to_address = $trx->to;
+                            $transaction->from_address = $trx->from;
+                            $transaction->save();
                         } else {
                             $transaction->trx_type = 'withdraw';
                             $balance = $balance - $transaction->value;
                             echo '<br> wd';
                             echo $balance;
                         }
-                        $transaction->block_no = $trx->blockNumber;
-                        $transaction->to_address = $trx->to;
-                        $transaction->from_address = $trx->from;
-                        $transaction->save();
                     }
                     echo  'skipping hash : '.$trx->hash;
                 }
