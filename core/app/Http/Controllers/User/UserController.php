@@ -85,8 +85,10 @@ class UserController extends Controller
     public function depositTransactionHistory()
     {
         $pageTitle = 'Deposit Transactions History';
-        $deposits  = auth()->user()->expTransactions()->searchable(['hash'])->where('user_id', auth()->id());
-
+        $deposits  = auth()->user()->expTransactions()->searchable(['hash'])
+        ->where('user_id', auth()->id())
+        ->where('trx_type','deposit');
+        
        /* if (request()->crypto) {
             $deposits = $deposits->where('crypto_currency_id', request()->crypto);
         }*/

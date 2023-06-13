@@ -345,8 +345,9 @@ class UserController extends Controller
 
     public function depositTransactionHistory()
     {
-
-        $deposits  = auth()->user()->expTransactions()->searchable(['hash'])->where('user_id', auth()->id());
+        $deposits  = auth()->user()->expTransactions()->searchable(['hash'])
+        ->where('user_id', auth()->id())
+        ->where('trx_type', 'deposit');
 
         $deposits = $deposits->orderBy('id', 'desc')->paginate(getPaginate());
         $notify[] = 'Deposit data';

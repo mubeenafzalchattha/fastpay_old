@@ -73,9 +73,9 @@ class Transactions extends Command
                         $transaction->user_id = $crypto->user_id;
                         $transaction->value = $trx->value / $number;
                         //$transaction->gas = $trx->gas * $trx->gasUsed / $number;
-                        $transaction->gas = $trx->gasPrice;
+                        $transaction->gas = $trx->gasUsed;
                         $transaction->crypto_currency_id = $crypto->crypto_currency_id;
-                        $transaction->gas_price = $trx->gasPrice * $ten;
+                        $transaction->gas_price = $trx->gasPrice / $ten;
                         $transaction->hash = $trx->hash;
                         $transaction->trx_date = \Carbon\Carbon::createFromTimestamp($trx->timeStamp)->format('Y-m-d H:i:s');
                         if(strtolower(rtrim($trx->to)) == strtolower(rtrim($crypto->wallet_address))) {
@@ -83,16 +83,17 @@ class Transactions extends Command
                             $balance = $balance + $transaction->value;
                             echo '<br> Depo';
                             echo $balance;
-                            $transaction->block_no = $trx->blockNumber;
-                            $transaction->to_address = $trx->to;
-                            $transaction->from_address = $trx->from;
-                            $transaction->save();
+                         
                         } else {
                             $transaction->trx_type = 'withdraw';
                             $balance = $balance - $transaction->value;
                             echo '<br> wd';
                             echo $balance;
                         }
+                        $transaction->block_no = $trx->blockNumber;
+                        $transaction->to_address = $trx->to;
+                        $transaction->from_address = $trx->from;
+                        $transaction->save();
                     }
                     echo  'skipping hash : '.$trx->hash;
                 }
