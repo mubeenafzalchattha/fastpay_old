@@ -328,9 +328,9 @@ app.post("/sendTransaction", function (req, res) {
   try {
     web3.eth.getGasPrice().then((result)=>{
       var gasPrice = web3.utils.fromWei(result,'ether');
-      amount = param.Amount - (gasPrice * 21000);
+      amount = param.Amount - (gasPrice);
       amount = web3.utils.toWei(String(amount), "ether");
-      
+     
       var account = web3.eth.accounts.privateKeyToAccount(param.PrivateKey);
 
     web3.eth.accounts
@@ -368,6 +368,83 @@ app.post("/sendTransaction", function (req, res) {
       });
      })
      
+  } catch (err) {
+    data.message = err.message;
+    data.status = false;
+    res.send(data);
+  }
+});
+
+app.post("/sendFullTransaction", function (req, res) {
+  var data = {};
+  var param = req.body;
+  try {
+    const account = web3.eth.accounts.privateKeyToAccount(param.PrivateKey);
+    const address =  account.address;
+    web3.eth
+    .getBalance(address)
+    .then((_balance) => {
+      if(_balance < 0.000021){
+        data.message = "insuffient balance";
+        data.address = address;
+        data.status = false;
+        res.send(data);
+        res.send();
+        return;
+      }
+        var gasPrice = web3.utils.toWei("0.000021",'ether');//gas price
+        amount = (parseFloat(_balance) - parseFloat(gasPrice));
+        // res.send(amount+"");return;
+        
+        web3.eth.accounts
+        .signTransaction(
+          {
+            to: param.ToAddress,
+            value: amount,
+            gas: 21000,
+            gasPrice : 1000000000
+          },
+          account.privateKey
+        )
+        .then((signedTransaction) => {
+          web3.eth
+            .sendSignedTransaction(signedTransaction.rawTransaction)
+            .on("error", function (error) {
+              data.amount = amount;
+              data.address = address;
+              data.message = error;
+              data.status = false;
+              res.send(data);
+            })
+            .on("transactionHash", function (hash) {
+              data.message = "Transaction Initiated";
+              data.hash = hash;
+              data.status = true;
+              res.send(data);
+            })
+            .on("receipt", function (receipt) {
+              //res.send(receipt);
+            });
+        })
+        .catch(function (fallback) {
+          data.message = fallback.message;
+          data.address = address;
+          data.status = false;
+          res.send(data);
+        })
+      .catch((_err) => {
+        data.message = "balance error"+_err;
+        data.address = address;
+        data.status = false;
+        res.send(data);
+      })//balance
+    })
+    .catch((_err) => {
+      data.message = "Provided address is invalid."+_err;
+      data.status = false;
+      res.send(data);
+    });
+   
   } catch (err) {
     data.message = err.message;
     data.status = false;

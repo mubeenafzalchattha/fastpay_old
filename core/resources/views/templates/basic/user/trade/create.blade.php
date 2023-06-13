@@ -241,7 +241,6 @@
                 var rate = '{{ getRate($ad) }}';
                 $('.message').text('');
                 $('.message-bal').text('');
-               
                 if (parseFloat(amount) < parseFloat(min)) {
                     $('.message').text(
                         `@lang('Minimum Limit is') : ${parseFloat(min).toFixed(2)} {{ __($ad->fiat->code) }}`);
@@ -270,7 +269,7 @@
                 var rate = '{{ getRate($ad) }}';
 
                 $('.message').text('');
-
+                $('.message-bal').text('');
                 var finalAmount = parseFloat(rate) * parseFloat(amount);
                 if(type == 1 && (parseFloat(bal)  < parseFloat(amount))){
                     $('#final-amount').val(0);
@@ -287,9 +286,7 @@
                   else {
                     $('#amount').val(parseFloat(finalAmount).toFixed(2));
                 }
-
             });
-
         })(jQuery)
     </script>
 @endpush

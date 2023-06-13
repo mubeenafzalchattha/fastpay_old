@@ -199,7 +199,6 @@ class TradeController extends Controller
             $heading =  'Buying ' . $ad->crypto->name;
         }
 
-
         $titleOne .= $ad->crypto->name . ' using ' . $ad->fiatGateway->name . ' with ' . $ad->fiat->name . ' (' . $ad->fiat->code . ')';
         $titleTwo .= $ad->crypto->name;
 
@@ -224,7 +223,6 @@ class TradeController extends Controller
 
         foreach ($allReviews as $singleReview) {
             $filteredReviews = [];
-
             $filteredReviews['id']         = $singleReview->id;
             $filteredReviews['user_id']    = $singleReview->user_id;
             $filteredReviews['user_name']  = $singleReview->user->username;
