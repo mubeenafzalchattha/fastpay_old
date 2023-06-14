@@ -58,7 +58,7 @@
                                                 <i class="la la-info-circle " title="{{ __(@$advertisementContent->data_values->crypto_currency) }}"></i>
                                             </label>
 
-                                            <select class="select" name="crypto_id" required>
+                                            <select class="select" name="crypto_id" id="crypto_id" required>
                                                 <option value="">@lang('Select One')</option>
                                                 @foreach ($cryptos as $crypto)
                                                     <option value="{{ $crypto->id }}" data-crypto="{{ $crypto->rate }}" data-currency="{{ $crypto->code }}">{{ __($crypto->name) }}</option>
@@ -140,7 +140,7 @@
                                             <label>@lang('Minimum Limit') <i class="la la-info-circle " title="{{ __(@$advertisementContent->data_values->minimum_limit) }}"></i></label>
                                             <div class="input-group">
                                                 <input type="number" step="any" name="min" id="min" value="{{ old('min') }}" placeholder="@lang('Minimum amount')" class="form-control" required>
-                                                <span class="input-group-text currency-text border-0"></span>
+                                                <span class="input-group-text currency-text-mm border-0"></span>
                                             </div>
                                         </div>
                                         <small class="text-warning">Available: <b>{{ __($balance).'  '.@$cryptos[0]->code }} </b></small>
@@ -153,7 +153,7 @@
                                             <label>@lang('Maximum Limit') <i class="la la-info-circle " title="{{ __(@$advertisementContent->data_values->maximum_limit) }}"></i></label>
                                             <div class="input-group">
                                                 <input type="number" step="any" name="max" id="max" value="{{ old('max') }}" placeholder="@lang('Maximum amount')" class="form-control" required>
-                                                <span class="input-group-text currency-text border-0"></span>
+                                                <span class="input-group-text currency-text-mm border-0"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -295,13 +295,20 @@
             $('select[name="crypto_id"]').on('change', function() {
                 cryptoRate = $(this).find('option:selected').data('crypto');
                 cryptoCurrency = $(this).find('option:selected').data('currency');
+                // if type 2 --> change only min/max currency
+                if(type == 2){
+                    $(document).find('.currency-text-mm').text(`@lang('${cryptoCurrency}')`);
+                }
                 priceEquation();
             });
 
             $('select[name="fiat_id"]').on('change', function() {
                 fiatRate = $(this).find('option:selected').data('fiat');
                 fiatCurrency = $(this).find('option:selected').data('currency');
-                $(document).find('.currency-text').text(`@lang('${fiatCurrency}')`);
+                if(type == 1){
+                    $(document).find('.currency-text').text(`@lang('${fiatCurrency}')`);
+                    $(document).find('.currency-text-mm').text(`@lang('${fiatCurrency}')`);
+                }
                 priceEquation();
             });
 
@@ -360,6 +367,8 @@
             $('#type').on('change', function() {
                 $('#min').val(0);
                 $('#max').val(0);
+                $('#crypto_id').val('');
+                $('.currency-text-mm').text('');
             })
 
             $('#min').on('input', function() {
