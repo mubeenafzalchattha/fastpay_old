@@ -521,15 +521,14 @@ function getAdUnpublishReason($ad, $maxLimit, $admin = false) {
 
 
 function getMaxLimit($wallets, $ad) {
-    $maxLimit = $ad->max;
-
+    $maxLimit = $ad->available;
     if ($ad->type == 2) {
         $userWallet = $wallets->where('crypto_currency_id', $ad->crypto_currency_id)->first();
+        // echo $userWallet;die;
         $rate       = getRate($ad);
         $userMax    = $userWallet->balance * $rate;
-        $maxLimit   = $ad->max < $userMax ? $ad->max : $userMax;
+        $maxLimit   = ($maxLimit < $userMax) ? $maxLimit : $userMax;
     }
-
     return $maxLimit;
 }
 

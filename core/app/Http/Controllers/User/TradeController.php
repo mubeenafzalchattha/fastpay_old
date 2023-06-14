@@ -31,6 +31,7 @@ class TradeController extends Controller
     {
         $ad          = Advertisement::findOrFail($id);
         $maxLimit    = getMaxLimit($ad->user->wallets, $ad);
+
         $isTradeable = $this->checkIsTradeable($ad, $maxLimit, true);
 
         if ($isTradeable[0] == 'error') {
@@ -50,7 +51,7 @@ class TradeController extends Controller
         $cryp_curr_id = $ad->user->wallets->first()->crypto_currency_id;
         $wallet  = Wallet::where('user_id', auth()->id())->where('crypto_currency_id',$cryp_curr_id)->first();
         $balance = $wallet->balance;
-
+        
         return view($this->activeTemplate . 'user.trade.create', compact('pageTitle', 'ad', 'maxLimit', 'positive', 'negative', 'reviews','balance'));
     }
 
@@ -140,7 +141,7 @@ class TradeController extends Controller
         $trade = Trade::where('uid', $id)->where(function ($q) {
             $q->orWhere('buyer_id', auth()->id())->orWhere('seller_id', auth()->id());
         })->with('chats')->firstOrFail();
-
+        
         $pageTitle = 'Trade Details';
         $title = '';
 
@@ -235,7 +236,6 @@ class TradeController extends Controller
 
     public function paid(Request $request,$id)
     {
-
         if(empty($request->txn) || !isset($request->txn)){
             $notify[] = ['error', 'Transaction Number is required to perform this action.'];
             return back()->withNotify($notify);
@@ -324,13 +324,11 @@ class TradeController extends Controller
     {
         $trade  = Trade::where('status', 2)->where('seller_id', auth()->id())->findOrFail($id);
         $wallet = Wallet::where('user_id', $trade->buyer->id)->where('crypto_currency_id', $trade->crypto_currency_id)->first();
-
         if (!$wallet) {
             $notify[] = ['error', 'You can not proceed this action'];
             return back()->withNotify($notify);
         }
-
-        $trade->status = Status::TRADE_COMPLETED;
+        $trade->status = Status::TRADE_COMPLETED; 
         $trade->details = 'Trade released by seller';
         $trade->completed_at = now();
         $trade->save();
@@ -338,6 +336,7 @@ class TradeController extends Controller
         $processingMin = now()->diffInMinutes(Carbon::parse($trade->created_at));
 
         $trade->advertisement->completed_trade += 1;
+        $trade->advertisement->available -= $trade->crypto_amount; //updated available balance
         $trade->advertisement->total_min += $processingMin;
         $trade->advertisement->save();
 

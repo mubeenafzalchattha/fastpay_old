@@ -253,10 +253,6 @@
                 var rate = '{{ getRate($ad) }}';
                 $('.message').text('');
                 $('.message-bal').text('');
-<<<<<<< HEAD
-=======
-
->>>>>>> b48e085b51f7860de572cbeeef2949f817015a0c
                 if (parseFloat(amount) < parseFloat(min)) {
                     $('.message').text(
                         `@lang('Minimum Limit is') : ${parseFloat(min).toFixed(2)} {{ __($ad->fiat->code) }}`);
