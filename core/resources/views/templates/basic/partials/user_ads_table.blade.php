@@ -60,9 +60,9 @@
                                     <div class="btn--group">
 
                                         <a href="{{ route('user.advertisement.reviews', $ad->id) }}" class="btn btn-outline--warning"><i class="lar la-thumbs-up"></i> @lang('Feedbacks')</a>
-
+                                        @if(blank($ad->tradeRequests))
                                         <a href="{{ route('user.advertisement.edit', $ad->id) }}" class="btn btn-outline--info"><i class="la la-pencil"></i> @lang('Edit')</a>
-
+                                        @endif
                                         @if ($ad->status)
                                             <button class="btn btn-outline--danger confirmationBtn" data-action="{{ route('user.advertisement.status', $ad->id) }}" data-question="@lang('Are you sure to disable this ad?')"><i class="la la-eye-slash"></i> @lang('Disable')</button>
                                         @else

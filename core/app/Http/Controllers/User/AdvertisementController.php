@@ -20,7 +20,7 @@ class AdvertisementController extends Controller
     public function index()
     {
         $pageTitle      = 'My Advertisements';
-        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->with(['crypto', 'fiatGateway', 'fiat', 'user.wallets'])->paginate(getPaginate());
+        $advertisements = Advertisement::where('user_id', auth()->id())->latest()->with(['crypto', 'fiatGateway', 'fiat', 'user.wallets','tradeRequests'])->paginate(getPaginate());
         $wallets        = Wallet::where('user_id', auth()->id())->first();
         return view($this->activeTemplate . 'user.advertisement.index', compact('pageTitle', 'advertisements', 'wallets'));
     }

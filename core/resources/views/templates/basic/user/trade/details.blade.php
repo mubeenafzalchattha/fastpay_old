@@ -72,13 +72,33 @@
 {{--
                     <span class="input-group-text bg--base text-white border-0" id="payment1">{{'Unique Transaction Number' }}</span>
 --}}
-                    <input type="text" id="unique_tranc_id" name="unique_tranc_id" class="form-control" placeholder="Unique Transaction Number" >
+                    <div class="form-group">
+                        <label>@lang('Unique Transaction Number (Proof of Payment)')<span style="color: red">*</span></label>
+                        <input type="text" id="unique_tranc_id" name="unique_tranc_id" class="form-control" placeholder="Unique Transaction Number" >
+                    </div>
                     <p id="required_val"></p>
+                    <div class="form-group">
+                        <p>Confirm Payment <span style="color: red">*</span></p>
+                    <p>
+
+                        <i class="fa fa-check" style="color: green"></i> &nbsp; You must leave Fastpay's platform to complete the transfer yourself. Fastpay will not automatically transfer the payment on your behalf.
+                    </p>
+                        <p>
+                        <i class="fa fa-times" style="color: red"></i> &nbsp; Do not click on the "I Have Paid" button without first making the payment. Doing so, without making the payment first. may cause your account to be suspended. Please note that the platform reserves the right to seek damages
+                        </p>
+                    </div>
+                    <div class="form-group custom-checkbox mt-2">
+                        <input class="form-check-input" type="checkbox" name="terms" id="terms" checked>
+                        <label class="form-check-label" for="terms">
+                            @lang('I have read and understood the above information')
+                        </label>
+                    </div>
+                    <p id="required_checkbox"></p>
                 </div>
                 <hr>
                 <div class="modal-header">
                     <button type="button" class="btn btn-sm btn--danger w-20" id="cancelPaid" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn--success w-20" id="confirmPaid">Submit</button>
+                    <button type="button" class="btn btn-sm btn--success w-20" id="confirmPaid">I Have Paid</button>
 
                 </div>
             </div>
@@ -132,18 +152,22 @@
 
         $('#confirmPaid').on('click', function() {
             var txn_no = $('#unique_tranc_id').val();
-            if(txn_no != '') {
+            var terms = $('#terms').is(":checked");
+
+
+            if(txn_no != '' && terms) {
 
                 var id = {{$trade->id}};
                 var url = "{{ route('user.trade.request.paid', ":txid") }}";
                 url = url.replace(':txid', id);
-                url = url+'?txn='+txn_no;
+                url = url+'?txn='+txn_no+'&terms='+terms;
                 $.ajax({
                     url: url,
-                    data:{"_token": "{{csrf_token()}}",txn:txn_no},
+                    data:{"_token": "{{csrf_token()}}",txn:txn_no,terms:terms},
                     method: 'POST',
                     success: function (response) {
                         $('#paidModal').modal('hide');
+                        location.reload();
                     },
                     error: function (xhr, status, error) {
                         console.log('An error occurred while loading the content.');
@@ -152,8 +176,14 @@
                     }
                 });
             } else {
-                html = '<span style="color:red;padding:10px">Unique Transaction Number required as a proof.</span> ';
-                $('#required_val').html(html);
+                if(!terms){
+                    term_error = '<span style="color:red;padding:10px">Must agree to terms and conditions.</span> ';
+                    $('#required_checkbox').html(term_error);
+                }
+                if(txn_no == '') {
+                    html = '<span style="color:red;padding:10px">Unique Transaction Number required as a proof.</span> ';
+                    $('#required_val').html(html);
+                }
             }
         });
     </script>

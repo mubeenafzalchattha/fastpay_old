@@ -208,6 +208,7 @@
         (function($) {
             "use strict";
             var bal = {{ __($balance)}};
+            var fixedRate = {{$crypto->rate }};
             $('.message-bal').text('');
             $('[name=type]').on('change', function() {
                 if (this.value == 1) {
@@ -234,7 +235,7 @@
                     `;
 
                     margin = 0;
-                    fixedRate = null;
+                    //fixedRate = null;
 
                 } else {
                     var currencyText;
@@ -249,13 +250,13 @@
                         <label>@lang('Fixed Price') <i class="la la-info-circle "  title="{{ __(@$advertisementContent->data_values->fixed_price) }}"></i></label>
 
                         <div class="input-group">
-                            <input type="number" step="any" class="form-control" name="fixed_price" value="0"
-                            placeholder="@lang('Fixed Price')" required>
+                            <input type="number" step="any" class="form-control" name="fixed_price" value="{{$crypto->rate}}"
+                            placeholder="@lang('Fixed Price')" readonly required>
                             <span class="input-group-text currency-text border-0">${currencyText}</span>
                         </div>
                     `;
 
-                    fixedRate = 0;
+                    //fixedRate = 0;
                     margin = null;
                 }
 
@@ -285,7 +286,7 @@
             var cryptoCurrency = $('select[name="crypto_id"]').find('option:selected').data('currency');
             var fiatRate = null;
             var fiatCurrency = null;
-            var fixedRate = null;
+
 
             $('select[name="type"]').on('change', function() {
                 type = $(this).find('option:selected').val();
@@ -346,16 +347,16 @@
                                 notify('error', 'Price equation or rate must be positive grater than zero')
                             }
 
-                            $('#priceEquation').text(parseFloat(rate).toFixed(2) + ' ' + fiatCurrency + '/' + cryptoCurrency);
+                            $('#priceEquation').text(parseFloat(rate).toFixed(5) + ' ' + fiatCurrency + '/' + cryptoCurrency);
 
                         } else {
-                            $('#priceEquation').text(parseFloat(amount).toFixed(2) + ' ' + fiatCurrency + '/' + cryptoCurrency);
+                            $('#priceEquation').text(parseFloat(amount).toFixed(5) + ' ' + fiatCurrency + '/' + cryptoCurrency);
                         }
                     } else {
                         if (parseFloat(fixedRate) > 0) {
 
-                            var rate = parseFloat(fixedRate).toFixed(2);
-                            $('#priceEquation').text(parseFloat(rate).toFixed(2) + ' ' + fiatCurrency + '/' + cryptoCurrency);
+                            var rate = parseFloat(fixedRate).toFixed(5);
+                            $('#priceEquation').text(parseFloat(rate).toFixed(5) + ' ' + fiatCurrency + '/' + cryptoCurrency);
 
                         } else {
                             $('#priceEquation').text('0.00' + ' ' + fiatCurrency + '/' + cryptoCurrency);

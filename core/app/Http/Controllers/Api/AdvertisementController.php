@@ -119,6 +119,13 @@ class AdvertisementController extends Controller {
         $paymentWindows = PaymentWindow::orderBy('minute')->get();
         $fiatGateways   = FiatGateway::getGateways();
 
+        $cryp_curr_id = $cryptos[0]->id;
+        $wallet  = Wallet::where('user_id', auth()->id())->where('crypto_currency_id',$cryp_curr_id)->first();
+        $balance = 0;
+        if(isset($wallet)) {
+            $balance = isset($wallet->balance)?$wallet->balance:0;
+        }
+
         $notify[] = 'New advertisement';
 
         $sellChargeMessage = $this->sellChargeMessage();
@@ -132,6 +139,7 @@ class AdvertisementController extends Controller {
                 'cryptos'            => $cryptos,
                 'payment_windows'    => $paymentWindows,
                 'fiat_gateways'      => $fiatGateways,
+                'balance'            => $balance
             ]
         ]);
     }
