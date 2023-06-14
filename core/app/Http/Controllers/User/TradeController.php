@@ -51,7 +51,7 @@ class TradeController extends Controller
         $cryp_curr_id = $ad->user->wallets->first()->crypto_currency_id;
         $wallet  = Wallet::where('user_id', auth()->id())->where('crypto_currency_id',$cryp_curr_id)->first();
         $balance = $wallet->balance;
-        
+
         return view($this->activeTemplate . 'user.trade.create', compact('pageTitle', 'ad', 'maxLimit', 'positive', 'negative', 'reviews','balance'));
     }
 
@@ -141,7 +141,7 @@ class TradeController extends Controller
         $trade = Trade::where('uid', $id)->where(function ($q) {
             $q->orWhere('buyer_id', auth()->id())->orWhere('seller_id', auth()->id());
         })->with('chats')->firstOrFail();
-        
+
         $pageTitle = 'Trade Details';
         $title = '';
 
@@ -240,12 +240,17 @@ class TradeController extends Controller
             $notify[] = ['error', 'Transaction Number is required to perform this action.'];
             return back()->withNotify($notify);
         }
+        if(!$request->terms){
+            $notify[] = ['error', 'Agreement To Terms And Conditions Is Must.'];
+            return back()->withNotify($notify);
+        }
         $trade = Trade::where('status', 0)->where('buyer_id', auth()->id())->findOrFail($id);
 
         $trade->status  = Status::TRADE_BUYER_SENT;
         $trade->details = 'Paid by buyer';
         $trade->paid_at = Carbon::now();
         $trade->unique_txn_no = isset($request->txn)?$request->txn:'';
+        $trade->payment_terms = isset($request->terms)?$request->terms:'false';
         $trade->save();
 
         $chat           = new Chat();
@@ -328,7 +333,7 @@ class TradeController extends Controller
             $notify[] = ['error', 'You can not proceed this action'];
             return back()->withNotify($notify);
         }
-        $trade->status = Status::TRADE_COMPLETED; 
+        $trade->status = Status::TRADE_COMPLETED;
         $trade->details = 'Trade released by seller';
         $trade->completed_at = now();
         $trade->save();
