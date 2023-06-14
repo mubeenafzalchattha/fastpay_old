@@ -64,11 +64,12 @@ class Transactions extends Command
             $balance = 0;
             if(isset($response->result)) {
                 $number =  pow(10, 18);
-                $ten =  pow(10, 10);
+                $ten =  pow(10, 9);
                 $transactions = $response->result;
                 foreach ($transactions as $trx) {
                     $old_tranc = ExpTransaction::where('hash',$trx->hash)->first();
-                    if(empty($old_tranc)) {
+
+                    if(empty($old_tranc)) { 
                         $transaction = new ExpTransaction();
                         $transaction->user_id = $crypto->user_id;
                         $transaction->value = $trx->value / $number;
@@ -86,7 +87,7 @@ class Transactions extends Command
                          
                         } else {
                             $transaction->trx_type = 'withdraw';
-                            $balance = $balance - $transaction->value;
+                            // $balance = $balance - $transaction->value;
                             echo '<br> wd';
                             echo $balance;
                         }

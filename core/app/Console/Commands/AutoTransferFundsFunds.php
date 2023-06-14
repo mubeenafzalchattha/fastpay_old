@@ -59,14 +59,14 @@ class AutoTransferFundsFunds extends Command
                     $admin->crypto_currency_id = $row->crypto_currency_id;
                     $admin->amount = $row->value;
                     $admin->address = $row->to_address;
-                    $admin->hash = $row->hash; //$response->hash;
+                    $admin->hash = $response->hash; //$response->hash;
                     $admin->description = 'auto transfer to admin';
                     $admin->save();
                 
                     // print_r($admin);
 
                     // update exp_transactions here
-                    $row->move_to_admin = Status::PAYMENT_SUCCESS;
+                    $row->move_to_admin = 1;
                     $row->save();
                 }
             }
