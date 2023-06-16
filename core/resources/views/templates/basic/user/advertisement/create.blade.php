@@ -246,14 +246,13 @@
                     }
 
                     var crypto_rate = '{{$crypto->rate}}';
-                    var rate = (parseFloat(crypto_rate)*parseFloat(1)).toFixed(5);
-                    alert(rate);
+                    var rate = (parseFloat(crypto_rate)*parseFloat(fiatRate)).toFixed(5);
 
                     html += `
                         <label>@lang('Fixed Price') <i class="la la-info-circle "  title="{{ __(@$advertisementContent->data_values->fixed_price) }}"></i></label>
 
                         <div class="input-group">
-                            <input type="number" step="any" class="form-control" id="fixed_price" name="fixed_price" value="{{$crypto->rate}}"
+                            <input type="number" step="any" class="form-control" id="fixed_price" name="fixed_price" value="${rate}"
                             placeholder="@lang('Fixed Price')" readonly required>
                             <span class="input-group-text currency-text border-0">${currencyText}</span>
                         </div>
