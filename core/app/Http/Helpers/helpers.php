@@ -525,8 +525,8 @@ function getMaxLimit($wallets, $ad) {
     if ($ad->type == 2) {
         $userWallet = $wallets->where('crypto_currency_id', $ad->crypto_currency_id)->first();
         // echo $userWallet;die;
-        $rate       = getRate($ad);
-        $userMax    = $userWallet->balance * $rate;
+        // $rate       = getRate($ad);
+        $userMax    = $userWallet->balance;
         $maxLimit   = ($maxLimit < $userMax) ? $maxLimit : $userMax;
     }
     return $maxLimit;

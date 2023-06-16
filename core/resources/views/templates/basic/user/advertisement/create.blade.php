@@ -208,8 +208,9 @@
         (function($) {
             "use strict";
             var bal = {{ __($balance)}};
-            var fixedRate = {{$crypto->rate }};
+            var fixedRate = {{$crypto->rate}};
             $('.message-bal').text('');
+
             $('[name=type]').on('change', function() {
                 if (this.value == 1) {
                     $('.tradeChargeText').empty();
@@ -222,11 +223,10 @@
 
             $('[name=price_type]').on('change', function() {
                 let html = ``;
-
+                
                 if (this.value == 1) {
                     html += `
                         <label>@lang('Margin') <i class="la la-info-circle "  title="{{ __(@$advertisementContent->data_values->margin) }}"></i></label>
-
                         <div class="input-group">
                             <input type="number" step="0.01" class="form-control" name="margin" value="0"
                             placeholder="@lang('Margin rate')" required>
@@ -239,18 +239,21 @@
 
                 } else {
                     var currencyText;
-
                     if (fiatCurrency) {
                         currencyText = fiatCurrency;
                     } else {
                         currencyText = '';
                     }
 
+                    var crypto_rate = '{{$crypto->rate}}';
+                    var rate = (parseFloat(crypto_rate)*parseFloat(1)).toFixed(5);
+                    alert(rate);
+
                     html += `
                         <label>@lang('Fixed Price') <i class="la la-info-circle "  title="{{ __(@$advertisementContent->data_values->fixed_price) }}"></i></label>
 
                         <div class="input-group">
-                            <input type="number" step="any" class="form-control" name="fixed_price" value="{{$crypto->rate}}"
+                            <input type="number" step="any" class="form-control" id="fixed_price" name="fixed_price" value="{{$crypto->rate}}"
                             placeholder="@lang('Fixed Price')" readonly required>
                             <span class="input-group-text currency-text border-0">${currencyText}</span>
                         </div>
@@ -279,14 +282,12 @@
                 $('.fiat-currency').html(html);
             }).change();
 
-
             var type = $('select[name="type"]').find('option:selected').val();
             var cryptoRate = $('select[name="crypto_id"]').find('option:selected').data('crypto');
             var margin = $('input[name="margin"]').val();
             var cryptoCurrency = $('select[name="crypto_id"]').find('option:selected').data('currency');
             var fiatRate = null;
             var fiatCurrency = null;
-
 
             $('select[name="type"]').on('change', function() {
                 type = $(this).find('option:selected').val();
@@ -306,10 +307,14 @@
             $('select[name="fiat_id"]').on('change', function() {
                 fiatRate = $(this).find('option:selected').data('fiat');
                 fiatCurrency = $(this).find('option:selected').data('currency');
+
                 if(type == 1){
                     $(document).find('.currency-text').text(`@lang('${fiatCurrency}')`);
                     $(document).find('.currency-text-mm').text(`@lang('${fiatCurrency}')`);
+                }else{
+                    $(document).find('.currency-text').text(`@lang('${fiatCurrency}')`);
                 }
+                
                 priceEquation();
             });
 
@@ -324,24 +329,20 @@
             });
 
             function priceEquation() {
-
                 if (!fiatRate) {
                     $('#priceEquation').text('0.00');
                 } else {
-
                     if ($('[name=price_type]').val() == 1) {
-
+                        
                         var amount = parseFloat(cryptoRate) * parseFloat(fiatRate);
-
+                       
                         if (parseFloat(margin) >= 0) {
                             var rate;
-
-                            if (parseInt(type) == 1) {
+                            if (parseInt(type) == 1) 
                                 rate = parseFloat(amount) - ((amount * parseFloat(margin)) / 100);
-                            } else if (parseInt(type) == 2) {
+                             else if (parseInt(type) == 2) 
                                 rate = parseFloat(amount) + ((amount * parseFloat(margin)) / 100);
-                            }
-
+                            
                             if (parseFloat(rate) <= 0) {
                                 $('[name=margin]').val(0);
                                 notify('error', 'Price equation or rate must be positive grater than zero')
@@ -354,10 +355,10 @@
                         }
                     } else {
                         if (parseFloat(fixedRate) > 0) {
-
-                            var rate = parseFloat(fixedRate).toFixed(5);
+                            // var rate = parseFloat(fixedRate).toFixed(5);
+                            var rate = (parseFloat(fiatRate)*parseFloat(fixedRate)).toFixed(5);
                             $('#priceEquation').text(parseFloat(rate).toFixed(5) + ' ' + fiatCurrency + '/' + cryptoCurrency);
-
+                            $('#fixed_price').val(parseFloat(rate).toFixed(5));
                         } else {
                             $('#priceEquation').text('0.00' + ' ' + fiatCurrency + '/' + cryptoCurrency);
                         }

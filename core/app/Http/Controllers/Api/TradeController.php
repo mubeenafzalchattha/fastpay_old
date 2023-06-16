@@ -580,6 +580,7 @@ class TradeController extends Controller
         $processingMin = now()->diffInMinutes(Carbon::parse($trade->created_at));
 
         $trade->advertisement->completed_trade += 1;
+        $trade->advertisement->available -= $trade->crypto_amount; //updated available balance
         $trade->advertisement->total_min       += $processingMin;
         $trade->advertisement->save();
 

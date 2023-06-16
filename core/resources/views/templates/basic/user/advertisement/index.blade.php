@@ -14,7 +14,6 @@
                 @include($activeTemplate . 'partials.user_ads_table')
             </div>
 
-
             @if ($advertisements->hasPages())
                 <div class="pagination-wrapper">
                     {{ $advertisements->links() }}

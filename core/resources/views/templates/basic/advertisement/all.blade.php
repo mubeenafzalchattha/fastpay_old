@@ -95,7 +95,7 @@
                                                 <td>{{ $ad->window }} @lang('Minutes')</td>
 
                                                 <td>
-                                                    {{ showAmount($ad->min) }} {{ __($ad->fiat_code) }} - {{ showAmount($ad->max) }} {{ __($ad->fiat_code) }}
+                                                    {{ showAmount($ad->min) }} {{ __($ad->fiat_code) }} - {{ showAmount($ad->available) }} {{ __($ad->fiat_code) }}
                                                 </td>
 
                                                 <td>{{ avgTradeSpeed($ad) }}</td>
